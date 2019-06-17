@@ -29,7 +29,6 @@ namespace Legion.Controllers
         private readonly IUserService userService;
         private readonly ITokenService tokenService;
         private readonly ILogger<AccountController> logger;
-        private AccountOptions accountOptions;
 
         public AccountController(
             IUserService userService,

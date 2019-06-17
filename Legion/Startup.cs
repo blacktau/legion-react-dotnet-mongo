@@ -1,15 +1,10 @@
 namespace Legion
 {
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Text;
-
     using Legion.Configuration;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.HttpsPolicy;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
     using Microsoft.Extensions.Configuration;
@@ -117,7 +112,7 @@ namespace Legion
 
         private byte[] GetJwtKey()
         {
-            var authenticationSettingsSection = this.Configuration.GetSection(nameof(AuthenticationOptions));
+            var authenticationSettingsSection = this.Configuration.GetSection(AuthenticationOptions.SectionName);
             var authenticationOptions = authenticationSettingsSection.Get<AuthenticationOptions>();
             return authenticationOptions.TokenSecretBytes;
         }
@@ -127,9 +122,11 @@ namespace Legion
             services.AddSingleton(
                 serviceProvider =>
                     {
-                        var mongoDbOptions = this.Configuration.GetSection(nameof(MongoDBOptions));
-                        var client = new MongoClient(mongoDbOptions[nameof(MongoDBOptions.ConnectionString)]);
-                        return client.GetDatabase(mongoDbOptions[nameof(MongoDBOptions.DatabaseName)]);
+                        var mongoSection = this.Configuration.GetSection(MongoDBOptions.SectionName);
+                        var mongoOptions = mongoSection.Get<MongoDBOptions>();
+                        var connectionString = string.Format(mongoOptions.ConnectionString, mongoOptions.WebPassword);
+                        var client = new MongoClient(connectionString);
+                        return client.GetDatabase(mongoSection[nameof(MongoDBOptions.DatabaseName)]);
                     });
         }
     }

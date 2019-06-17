@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.3'
 
 services:
 
@@ -6,26 +6,29 @@ services:
     image: mongo
     restart: always
     ports:
-      - 27017:27017
+      - "27017:27017"
     env_file:
       - .env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=LegionRoot
-      - MONGO_INITDB_ROOT_PASSWORD=${LEGION_ROOT_DATABASE_PASSWORD:?LEGION_ROOT_DATABASE_PASSWORD environment variable must be set}
+      - MONGO_INITDB_ROOT_PASSWORD=${LEGION_ROOT_DATABASE_PASSWORD}
       - MONGO_INITDB_DATABASE=Legion
       - LEGION_WEB_USERNAME=LegionWeb
-      - LEGION_WEB_PASSWORD=${LEGION_WEB_PASSWORD:?LEGION_WEB_PASSWORD environment variable must be set}
+      - LEGION_WEB_PASSWORD"=${LEGION_Mongo__WebPassword}
     volumes:
-      - ./Data:/data/db
-      - ./Init:/docker-entrypoint-initdb.d
+      - type: bind
+        source: ./Init/
+        target: /docker-entrypoint-initdb.d/
 
   legion-mongo-express:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - "8081:8081"
     env_file:
       - .env
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=LegionRoot
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=${LEGION_ROOT_DATABASE_PASSWORD:?LEGION_ROOT_DATABASE_PASSWORD environment variable must be set}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${LEGION_ROOT_DATABASE_PASSWORD}
+      - ME_CONFIG_MONGODB_SERVER=legion-mongo
+
