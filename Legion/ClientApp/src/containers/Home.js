@@ -2,12 +2,15 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import 'typeface-poiret-one'
+import Header from '../components/Header'
+
 class Home extends PureComponent {
   render () {
     return (
-      <div>
-
-      </div>
+      <>
+        <Header />
+      </>
     )
   }
 }
@@ -15,5 +18,8 @@ class Home extends PureComponent {
 Home.propTypes = {
 
 }
+const mapStateToProps = (state) => ({
 
-export default Home
+})
+
+export default connect(mapStateToProps)(Home)

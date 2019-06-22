@@ -3,9 +3,10 @@ set -e
 
 mongo <<EOF
 use Legion
+
 db.createUser({
-  user:  '$LEGION_WEB_USERNAME',
-  pwd: '$LEGION_WEB_PASSWORD',
+  user:  'LegionWeb',
+  pwd: '$LEGION_Mongo__WebPassword',
   roles: ['readWrite']
 })
 

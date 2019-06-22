@@ -11,5 +11,9 @@ namespace Legion.Services
         Task UpdateUserPassword(User user, string newPassword);
 
         Task<PasswordValidationResult> ValidateNewPassword(User user, string newPassword);
+
+        Task<bool> IsExistingUser(string adminUsername);
+
+        Task CreateUser(string adminUsername, string defaultAdminPassword);
     }
 }

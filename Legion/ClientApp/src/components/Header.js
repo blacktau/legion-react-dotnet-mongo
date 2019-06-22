@@ -1,80 +1,32 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { logout } from '../actions'
-import { Navbar, Alignment } from '@blueprintjs/core'
-import { Button } from 'semantic-ui-react'
+import { Icon } from '@blueprintjs/core'
 
-class Header extends React.Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      anchorElement: null
-    }
-  }
-
-  handleClick = event => {
-    this.setState({ anchorElement: event.currentTarget })
-  }
-
-  handleClose = () => {
-    this.setState({ anchorElement: null })
-  }
-
-  handleLogout = () => {
-    this.handleClose()
-    this.props.dispatch(logout.request())
-  }
-
+class Header extends Component {
   render () {
-    const { anchorElement } = this.state
-    const { classes } = this.props
-
     return (
-      <Navbar fixedToTop>
-        <Navbar.Group align={Alignment.LEFT}>
-          <Navbar.Heading>Blacktau Photography Admin</Navbar.Heading>
-          <Link to='/'>
-            <Button icon='home' text='Home' />
-          </Link>
-        </Navbar.Group>
-      </Navbar>
+      <>
+        <div className='header'>
+          <div className='headerLeft'>
+            <h1>
+              <Link to='/'>
+                <span className='headerWord headerWord1'>Black</span>
+                <span className='headerWord headerWord2'>tau</span>
+              </Link>
+            </h1>
+            <h2>
+              photography
+            </h2>
+          </div>
+          <div className='headerRight'>
+            <Icon icon='filter' iconSize='32' className='headerIcon' />
+            <Icon icon='menu' iconSize='32' className='headerIcon' />
+          </div>
+        </div>
+        <div className='headerClear' />
+      </>
     )
-
-    //     <Menu
-    //       id='simple-menu'
-    //       anchorEl={anchorElement}
-    //       open={Boolean(anchorElement)}
-    //       onClose={this.handleClose}
-    //       anchorOrigin={{
-    //         vertical: 'top',
-    //         horizontal: 'right'
-    //       }}
-    //       transformOrigin={{
-    //         vertical: 'top',
-    //         horizontal: 'right'
-    //       }}>
-    //       <MenuItem component={Link} to='/' onClick={this.handleClose}>
-    //           Home
-    //       </MenuItem>
-    //       <MenuItem component={Link} to='/admin' onClick={this.handleClose}>
-    //           Admin
-    //       </MenuItem>
-    //       <MenuItem component={Link} to='/admin/change-password' onClick={this.handleClose}>
-    //           Change Password
-    //       </MenuItem>
-    //       <MenuItem component={Link} to='/admin/photographs/upload' onClick={this.handleClose}>
-    //           Upload Photograph
-    //       </MenuItem>
-
-    //       <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
-    //     </Menu>
-    // )
   }
 }
 
-const mapStateToProps = (state) => ({
-})
-
-export default connect(mapStateToProps)(Header)
+export default Header

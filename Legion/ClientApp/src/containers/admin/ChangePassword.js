@@ -2,11 +2,10 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { changePassword } from '../actions'
+import { changePassword } from '../../actions'
 
-import { Button, Header, Icon, Modal } from 'semantic-ui-react'
-import ChangePasswordDialog from '../components/ChangePasswordDialog'
-import { getAuthenticationToken, getChangePasswordError, isChangingPassword, isPasswordChanged } from '../selectors'
+import ChangePasswordDialog from '../../components/admin/ChangePasswordDialog'
+import { getAuthenticationToken, getChangePasswordError, isChangingPassword, isPasswordChanged } from '../../selectors'
 import { push } from 'react-router-redux'
 
 class ChangePassword extends PureComponent {

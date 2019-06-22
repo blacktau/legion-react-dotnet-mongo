@@ -1,11 +1,12 @@
 import React from 'react'
-import Header from './Header'
+import AdminHeader from './AdminHeader'
 import { Classes } from '@blueprintjs/core'
+import './admin.css'
 
 const AdminLayout = (props) => {
   return (
     <div className={Classes.DARK}>
-      <Header />
+      <AdminHeader />
       {props.children}
     </div>
   )

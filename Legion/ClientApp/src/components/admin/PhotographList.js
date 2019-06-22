@@ -1,20 +1,7 @@
-import { Table, TableBody,  Typography, withStyles, withTheme } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import PhotographListRow from './PhotographListRow'
-import PhotographListHeader from './PhotographListHeader';
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing.unit
-  },
-  buttonCell: {
-    width: theme.spacing.unit * 25
-  },
-  thumbNailCell: {
-    width: '75px'
-  }
-})
+import PhotographListHeader from './PhotographListHeader'
 
 class PhotographList extends PureComponent {
   constructor (props) {

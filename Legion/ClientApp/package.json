@@ -16,7 +16,8 @@
     "redux": "^4.0.1",
     "redux-saga": "^1.0.3",
     "rimraf": "^2.6.3",
-    "semantic-ui-react": "^0.87.2",
+    "typeface-open-sans": "0.0.54",
+    "typeface-poiret-one": "0.0.71",
     "typeface-roboto": "0.0.54"
   },
   "devDependencies": {

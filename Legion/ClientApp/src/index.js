@@ -5,6 +5,7 @@ import { routerMiddleware } from 'react-router-redux'
 import createSagaMiddleware from 'redux-saga'
 
 import 'typeface-roboto'
+import 'typeface-open-sans'
 import './index.css'
 
 import routes from './routes'

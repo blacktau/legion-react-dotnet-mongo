@@ -5,12 +5,10 @@ namespace Legion.Services
     using System.Security.Cryptography;
     using System.Threading.Tasks;
 
-    using Legion.Configuration;
     using Legion.Models;
     using Legion.Repositories;
 
     using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-    using Microsoft.Extensions.Options;
 
     public class UserService : IUserService
     {
@@ -55,6 +53,24 @@ namespace Legion.Services
             }
 
             return Task.FromResult(PasswordValidationResult.Valid);
+        }
+
+        public Task<bool> IsExistingUser(string username)
+        {
+            return this.userRepository.IsExistingUser(username);
+        }
+
+        public async Task CreateUser(string username, string password)
+        {
+            var user = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                Username = username,
+            };
+
+            this.SetUserPassword(user, password);
+
+            await this.userRepository.AddUser(user);
         }
 
         private void SetUserPassword(User user, string password)

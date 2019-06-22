@@ -16,7 +16,7 @@ function * authoriseHook ({ username, password }) {
   }
 
   try {
-    const { token } = yield call(fetchJSON, '/api/auth/login', options)
+    const { token } = yield call(fetchJSON, '/api/account/login', options)
     yield put(authorise.success(token))
     sessionStorage.setItem(TOKEN_NAME, token)
   } catch (error) {

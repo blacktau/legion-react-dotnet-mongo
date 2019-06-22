@@ -13,9 +13,10 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=LegionRoot
       - MONGO_INITDB_ROOT_PASSWORD=${LEGION_ROOT_DATABASE_PASSWORD}
       - MONGO_INITDB_DATABASE=Legion
-      - LEGION_WEB_USERNAME=LegionWeb
-      - LEGION_WEB_PASSWORD"=${LEGION_Mongo__WebPassword}
     volumes:
+      - type: bind
+        source: ./Home/
+        target: /home/mongodb/
       - type: bind
         source: ./Init/
         target: /docker-entrypoint-initdb.d/

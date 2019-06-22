@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Redirect } from 'react-router-dom'
 
-import { uploadPhotograph } from '../actions'
-import { getAuthenticationToken, getUploadingPhotographs } from '../selectors'
-import DropTarget from '../components/DropTarget'
-import UploadProgressDisplay from '../components/UploadProgressDisplay'
+import { uploadPhotograph } from '../../actions'
+import { getAuthenticationToken, getUploadingPhotographs } from '../../selectors'
+import DropTarget from '../../components/admin/DropTarget'
+import UploadProgressDisplay from '../../components/admin/UploadProgressDisplay'
 import { Dialog, DialogTitle, DialogContent, Typography, DialogActions, Button } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -39,7 +39,7 @@ class PhotographUpload extends PureComponent {
       this.reset()
       this.props.dispatch(push('/admin'))
     } else {
-      this.setState({showReset: true})
+      this.setState({ showReset: true })
     }
   }
 

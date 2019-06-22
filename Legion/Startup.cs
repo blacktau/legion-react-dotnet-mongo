@@ -9,6 +9,7 @@ namespace Legion
     using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
 
     using MongoDB.Driver;
@@ -62,6 +63,7 @@ namespace Legion
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddLegionOptions(this.Configuration);
             services.AddLegionServices();
 
             this.RegisterMongoDatabase(services);
@@ -73,6 +75,7 @@ namespace Legion
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                IdentityModelEventSource.ShowPII = true;
             }
             else
             {

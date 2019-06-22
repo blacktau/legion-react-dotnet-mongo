@@ -1,7 +1,59 @@
 @import "~normalize.css";
-@import "~@blueprintjs/core/lib/css/blueprint.css";
-@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
 
 body {
     background-color: #292f33;
+    font-weight: 300;
+    font-family: 'Open Sans';
+}
+
+.header {
+    color: rgb(153, 153, 153);
+    width: 95%;
+    margin: 5px auto;
+}
+
+.header h1 {
+    text-align: left;
+    font-size: 2em;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+}
+
+.header h2 {
+    text-align: left;
+    font-weight: 300;
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+}
+
+.headerLeft {
+    float: left;
+}
+
+.headerRight {
+    float: right;
+    text-align: right;
+}
+
+.headerWord {
+    font-family: Poiret One, Helvetica;
+    font-weight: 300;
+}
+
+.headerWord1 {
+    color: rgb(222, 94, 96);
+}
+
+.headerWord2 {
+    color: white;
+}
+
+.headerIcon {
+    padding: 10px;
+}
+
+.headerClear {
+    clear: both;
 }

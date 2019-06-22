@@ -1,11 +1,9 @@
 import React from 'react'
 import { Route } from 'react-router'
 import { Switch } from 'react-router-dom'
-// import AdminHome from './containers/AdminHome'
 import Home from './containers/Home'
-// import Login from './containers/Login'
 import NoMatch from './containers/NoMatch'
-import AdminRoot from './containers/AdminRoot'
+import AdminRoot from './containers/admin/AdminRoot'
 
 // import UploadPhotograph from './containers/UploadPhotograph'
 // import ChangePassword from './containers/ChangePassword'

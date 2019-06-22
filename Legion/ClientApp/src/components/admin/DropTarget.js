@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
-import { Container, Header, Icon } from 'semantic-ui-react'
 
 // const styles = theme => ({
 //   dropzone: {

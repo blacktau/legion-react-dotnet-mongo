@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Header, ModalContent, Form, ModalActions, Button } from 'semantic-ui-react'
 // import { changePassword } from '../actions'
 
 class ChangePasswordDialog extends PureComponent {

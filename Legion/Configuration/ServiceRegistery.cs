@@ -3,8 +3,8 @@ namespace Legion.Configuration
     using Legion.ImageResolvers;
     using Legion.Repositories;
     using Legion.Services;
-
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Options;
 
@@ -26,7 +26,15 @@ namespace Legion.Configuration
                 .AddSingleton<IPhotographService, PhotographService>()
                 .AddSingleton<IImageMetadataExtractor, ImageMetadataExtractor>()
                 .AddSingleton<IMongoDbResolverFactory, MongoDbResolverFactory>()
-                .AddSingleton<ITokenService, TokenService>();
+                .AddSingleton<ITokenService, TokenService>()
+                .AddSingleton<IStartupFilter, EnsureAdminUserStartupFilter>();
+        }
+
+        public static IServiceCollection AddLegionOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<AuthenticationOptions>(configuration.GetSection(AuthenticationOptions.SectionName));
+
+            return services;
         }
 
         public static IServiceCollection AddImageSharpServices(this IServiceCollection services)
