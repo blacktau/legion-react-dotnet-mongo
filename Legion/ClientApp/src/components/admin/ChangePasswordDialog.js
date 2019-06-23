@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-// import { changePassword } from '../actions'
+import { Dialog, Classes, Callout, InputGroup, Button, Intent } from '@blueprintjs/core'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import { changePassword } from '../../actions'
+import { getChangePasswordError, isChangingPassword, isPasswordChanged } from '../../selectors'
 
 class ChangePasswordDialog extends PureComponent {
   constructor (props) {
@@ -12,6 +16,27 @@ class ChangePasswordDialog extends PureComponent {
       repeatedNewPassword: '',
       submitted: false
     }
+  }
+
+  onSubmit = (currentPassword, newPassword, repeatedNewPassword) => {
+    this.setState({ submitted: true })
+
+    if (currentPassword && newPassword && repeatedNewPassword) {
+      this.props.dispatch(changePassword.request(currentPassword, newPassword, repeatedNewPassword))
+    }
+  }
+
+  onCancel = () => {
+    this.props.dispatch(push('/admin'))
+  }
+
+  handleCloseError = () => {
+    this.props.dispatch(changePassword.clearError())
+  }
+
+  handleAcknowledgementClosed = () => {
+    this.props.dispatch(changePassword.changeAcknowledged())
+    this.props.dispatch(push('/admin'))
   }
 
   updateCurrentPassword = (ev) => {
@@ -26,70 +51,81 @@ class ChangePasswordDialog extends PureComponent {
     this.setState({ repeatedNewPassword: ev.target.value })
   }
 
-  onSubmit = () => {
-    this.setState({ submitted: true })
-    const { currentPassword, newPassword, repeatedNewPassword } = this.state
-
-    if (currentPassword && newPassword && repeatedNewPassword) {
-      this.props.onSubmit(currentPassword, newPassword, repeatedNewPassword)
-    }
-  }
-
-  onCancel = () => {
-    this.props.onCancel()
-  }
-
   render = () => {
     const { changingPassword } = this.props
-    const { submitted, currentPassword, newPassword, repeatedNewPassword } = this.state
+    const { currentPassword, newPassword, repeatedNewPassword, error } = this.state
 
     return (
-      <Modal open>
-        <Header>Change Password</Header>
-        <ModalContent>
-          <Form>
-            <Form.Input
-              id='currentPassword'
-              label='Current Password'
-              value={currentPassword}
-              onChange={this.updateCurrentPassword}
-              required
-              autoComplete='current-password'
-              type='password'
-              error={submitted && !currentPassword}
-              icon='times circle' />
-            <Form.Input
-              id='newPassword'
-              label='New Password'
-              value={newPassword}
-              onChange={this.updateNewPassword}
-              required
-              autoComplete='new-password'
-              type='password'
-              error={submitted && !newPassword} />
-            <Form.Input
-              id='repeatPassword'
-              label='Repeat New Password'
-              value={repeatedNewPassword}
-              onChange={this.updateRepeatPassword}
-              required
-              autoComplete='new-password'
-              type='password'
-              error={submitted && (!repeatedNewPassword || repeatedNewPassword !== newPassword)} />
-          </Form>
-          <ModalActions>
-            <Button onClick={this.onSubmit} primary disabled={changingPassword}>Change Password</Button>
-            <Button onClick={this.onCancel} secondary disabled={changingPassword}>Cancel</Button>
-          </ModalActions>
-        </ModalContent>
-      </Modal>
+      <Dialog
+        isOpen
+        autoFocus
+        enforceFocus
+        icon='lock'
+        className={Classes.DARK}
+        title='Change Password'
+        onClose={this.onCancel}>
+        <div className={Classes.DIALOG_BODY}>
+          {error && <Callout intent={Intent.DANGER} >
+            {error}
+          </Callout>}
+          <InputGroup
+            disabled={changingPassword}
+            value={currentPassword}
+            type='password'
+            autoComplete='current-password'
+            placeholder='Current Password'
+            onChange={this.updateCurrentPassword}
+            required />
+          <br />
+          <InputGroup
+            disabled={changingPassword}
+            value={newPassword}
+            type='password'
+            autoComplete='new-password'
+            placeholder='New Password'
+            onChange={this.updateNewPassword}
+            required />
+          <br />
+          <InputGroup
+            disabled={changingPassword}
+            value={repeatedNewPassword}
+            type='password'
+            autoComplete='new-password'
+            placeholder='Repeat New Password'
+            onChange={this.updateRepeatPassword}
+            required />
+        </div>
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            <Button
+              intent={Intent.PRIMARY}
+              onClick={this.onSubmit}
+              disabled={changingPassword}
+              loading={changingPassword}>Change Password</Button>
+            <Button
+              onClick={this.onCancel}
+              disabled={changingPassword}
+              loading={changingPassword}>Cancel</Button>
+          </div>
+        </div>
+      </Dialog>
     )
   }
 }
+
+ChangePasswordDialog.propTypes = {
+  error: PropTypes.string
+}
+
+const mapStateToProps = (state) => ({
+  error: getChangePasswordError(state),
+  changingPassword: isChangingPassword(state),
+  passwordChanged: isPasswordChanged(state)
+})
 
 ChangePasswordDialog.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 }
 
-export default ChangePasswordDialog
+export default connect(mapStateToProps)(ChangePasswordDialog)

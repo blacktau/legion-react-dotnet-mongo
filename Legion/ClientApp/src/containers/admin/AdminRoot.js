@@ -5,6 +5,7 @@ import { Switch } from 'react-router-dom'
 import AdminLayout from '../../components/admin/AdminLayout'
 import AdminHome from './AdminHome'
 import Login from './Login'
+import ChangePassword from './ChangePassword'
 
 const AdminRoot = () => (
   <>
@@ -12,6 +13,7 @@ const AdminRoot = () => (
     <Switch>
       <Route exact path='/admin' component={AdminHome} />
       <Route path='/admin/login' component={Login} />
+      <Route path='/admin/change-password' component={ChangePassword} />
     </Switch>
   </>
 )

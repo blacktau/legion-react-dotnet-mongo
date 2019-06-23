@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Classes, Dialog, Intent, InputGroup, Tooltip, Callout } from '@blueprintjs/core'
+import { Button, Classes, Dialog, Intent, InputGroup, Tooltip, Callout, Popover, PopoverPosition, Icon, ControlGroup, PopoverInteractionKind } from '@blueprintjs/core'
 import { connect } from 'react-redux'
 import { authorise } from '../../actions'
 import { getAuthenticationError, isAuthenticating } from '../../selectors'
@@ -46,7 +46,7 @@ class LoginDialog extends PureComponent {
 
   render = () => {
     const { authenticating, error } = this.props
-    const { username, password, showPassword } = this.state
+    const { username, password, showPassword, submitted } = this.state
 
     const lockButton = (
       <Tooltip content={`${showPassword ? 'Hide' : 'Show'} Password`} disabled={authenticating}>
@@ -65,26 +65,54 @@ class LoginDialog extends PureComponent {
           {error && <Callout intent={Intent.DANGER} >
             {error}
           </Callout>}
-          <InputGroup
-            disabled={authenticating}
-            value={username}
-            type='text'
-            placeholder='Username'
-            onChange={this.updateUsername}
-            icon='lock'
-            required />
+          <ControlGroup fill vertical={false}>
+            <InputGroup
+              disabled={authenticating}
+              value={username}
+              type='text'
+              placeholder='Username'
+              onChange={this.updateUsername}
+              icon='lock'
+              required
+              intent={submitted && (username == null || username.length <= 1) ? Intent.DANGER : Intent.NONE} />
+            { submitted && (username == null || username.length <= 1) &&
+              <Popover
+                popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+                position={PopoverPosition.AUTO_END}
+                className={Classes.FIXED}
+                interactionKind={PopoverInteractionKind.HOVER}
+                inheritDarkTheme>
+                <Icon icon='error' className={Classes.FIXED} style={{ marginLeft: '10px', marginTop: '5px' }} />
+                <div>
+                  Username is required.
+                </div>
+              </Popover> }
+          </ControlGroup>
           <br />
-
-          <InputGroup
-            disabled={authenticating}
-            value={password}
-            type={showPassword ? 'text' : 'password'}
-            placeholder='Password'
-            onChange={this.updatePassword}
-            rightElement={lockButton}
-            onKeyPress={this.handleEnterSubmit}
-            required />
-
+          <ControlGroup fill vertical={false}>
+            <InputGroup
+              disabled={authenticating}
+              value={password}
+              type={showPassword ? 'text' : 'password'}
+              placeholder='Password'
+              onChange={this.updatePassword}
+              rightElement={lockButton}
+              onKeyPress={this.handleEnterSubmit}
+              required
+              intent={submitted && (password == null || password.length <= 1) ? Intent.DANGER : Intent.NONE} />
+            { submitted && (password == null || password.length <= 1) &&
+              <Popover
+                popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+                position={PopoverPosition.AUTO_END}
+                className={Classes.FIXED}
+                interactionKind={PopoverInteractionKind.HOVER}
+                inheritDarkTheme>
+                <Icon icon='error' className={Classes.FIXED} style={{ marginLeft: '10px', marginTop: '5px' }} />
+                <div>
+                  Password is required.
+                </div>
+              </Popover> }
+          </ControlGroup>
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>

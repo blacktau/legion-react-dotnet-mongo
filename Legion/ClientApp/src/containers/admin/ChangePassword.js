@@ -27,42 +27,14 @@ class ChangePassword extends PureComponent {
   }
 
   render = () => {
-    const { error, token, changingPassword, passwordChanged } = this.props
+    const { token } = this.props
 
     if (!token) {
       return <Redirect to='/admin/login' />
     }
 
     return (
-      <div>
-        <ChangePasswordDialog changingPassword={changingPassword} onSubmit={this.onSubmit} onCancel={this.onCancel} />
-        { error &&
-        <Modal basic size='small' onClose={this.handleCloseError}>
-          <Header icon='exclamation triangle' content='Error' />
-          <Modal.Content>
-            <Icon name='exclamation triangle' />
-            There has been an error: {error}
-          </Modal.Content>
-          <Modal.Actions>
-            <Button basic color='red' inverted onClick={this.handleCloseError}>
-              <Icon name='checkmark' /> OK
-            </Button>
-          </Modal.Actions>
-        </Modal>
-        }
-        <Modal basic size='small' onClose={this.handleAcknowledgementClosed} open={passwordChanged}>
-          <Header icon='' content='Password Changed' />
-          <Modal.Content>
-            <Icon name='checkmark box' />
-            Your password has been updated.
-          </Modal.Content>
-          <Modal.Actions>
-            <Button basic color='green' inverted onClick={this.handleCloseError}>
-              <Icon name='checkmark' /> OK
-            </Button>
-          </Modal.Actions>
-        </Modal>
-      </div>
+      <ChangePasswordDialog />
     )
   }
 }
