@@ -32,7 +32,8 @@ namespace Legion.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim(ClaimTypes.Name, user.Id),
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim(ClaimTypes.Sid, user.Id),
                     }),
                 Expires = DateTime.UtcNow.AddDays(this.authenticationOptions.ClaimExpiryDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(this.authenticationOptions.TokenSecretBytes), SecurityAlgorithms.HmacSha256Signature),

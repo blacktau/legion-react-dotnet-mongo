@@ -25,11 +25,11 @@ class PhotographList extends PureComponent {
     const { selected, order, orderBy, columns } = this.state
 
     if (!photographs || photographs.length === 0) {
-      return <Typography>No Photographs!</Typography>
+      return <div>No Photographs!</div>
     }
 
     return (
-      <Table>
+      <table>
         <PhotographListHeader
           numSelected={selected.length}
           order={order}
@@ -38,14 +38,14 @@ class PhotographList extends PureComponent {
           onRequestSort={this.handleRequestSort}
           rowCount={photographs.length}
           columns={columns} />
-        <TableBody>
+        <tablebody>
           {photographs.map(p => {
             return (
               <PhotographListRow key={p.id} onPublish={onPublish} onSuppress={onSuppress} value={p} />
             )
           })}
-        </TableBody>
-      </Table>
+        </tablebody>
+      </t>
     )
   }
 }
@@ -57,4 +57,4 @@ PhotographList.propTypes = {
   onSuppress: PropTypes.func.isRequired
 }
 
-export default withTheme()(withStyles(styles)(PhotographList))
+export default PhotographList

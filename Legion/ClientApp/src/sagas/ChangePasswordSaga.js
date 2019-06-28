@@ -13,7 +13,7 @@ function * changePasswordHook ({ currentPassword, newPassword, repeatedNewPasswo
   }
 
   try {
-    yield call(fetchJSON, '/api/auth/changePassword', options)
+    yield call(fetchJSON, '/api/account/changePassword', options)
     yield put(changePassword.success())
   } catch (errorResponse) {
     let message

@@ -33,6 +33,7 @@ function * authoriseHook ({ username, password }) {
         console.error(error)
         break
     }
+
     yield put(authorise.failure(message))
   }
 }
