@@ -1,23 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
-
-// const styles = theme => ({
-//   dropzone: {
-//     marginLeft: 'auto',
-//     marginRight: 'auto',
-//     width: 300,
-//     height: 300,
-//     borderWidth: 2,
-//     borderColor: theme.palette.grey[700],
-//     borderStyle: 'dashed',
-//     borderRadius: 5,
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginTop: theme.spacing.unit * 2
-//   }
-// })
+import { Icon, Classes, Card } from '@blueprintjs/core'
 
 class DropTarget extends PureComponent {
   constructor (props) {
@@ -34,24 +18,22 @@ class DropTarget extends PureComponent {
   }
 
   render = () => {
-    const { classes, accept } = this.props
+    const { accept } = this.props
     return (
-      <div>
-        <Container>
-          <Header>Upload Photograph</Header>
-          <p>
-            Drag and Drop photographs to upload
-          </p>
-          <Dropzone className={classes.dropzone} accept={accept} onDrop={this.onDrop}>
-            {({ getRootProps, getInputProps }) => (
-              <div {...getRootProps()}>
-                <Icon name='add' />
-                <input {...getInputProps()} />
-              </div>
-            )}
-          </Dropzone>
-        </Container>
-      </div>
+      <Card className={Classes.DARK + ' dropCard'} interactive>
+        <h3>Upload Photographs</h3>
+        <Dropzone accept={accept} onDrop={this.onDrop}>
+          {({ getRootProps, getInputProps }) => (
+            <div {...getRootProps({ className: 'dropTarget' })}>
+              <Icon icon='cloud-upload' iconSize={128} />
+              <p>
+                Drop photographs here to upload
+              </p>
+              <input {...getInputProps()} />
+            </div>
+          )}
+        </Dropzone>
+      </Card>
     )
   }
 }

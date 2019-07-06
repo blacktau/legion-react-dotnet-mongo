@@ -6,6 +6,8 @@ import AdminLayout from '../../components/admin/AdminLayout'
 import AdminHome from './AdminHome'
 import Login from './Login'
 import ChangePassword from './ChangePassword'
+import UploadPhotograph from './UploadPhotograph'
+import './admin.scss'
 
 const AdminRoot = () => (
   <>
@@ -13,6 +15,7 @@ const AdminRoot = () => (
     <Switch>
       <Route exact path='/admin' component={AdminHome} />
       <Route path='/admin/login' component={Login} />
+      <Route path='/admin/photographs/upload' component={UploadPhotograph} />
       <Route path='/admin/change-password' component={ChangePassword} />
     </Switch>
   </>

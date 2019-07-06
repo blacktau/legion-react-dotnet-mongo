@@ -6,7 +6,7 @@ import createSagaMiddleware from 'redux-saga'
 
 import 'typeface-roboto'
 import 'typeface-open-sans'
-import './index.css'
+import './index.scss'
 
 import routes from './routes'
 import configureStore from './store/configureStore'

@@ -1,50 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { TableRow, TableCell, LinearProgress, Typography, withStyles, withTheme } from '@material-ui/core'
-import DoneIcon from '@material-ui/icons/Done'
-import WarningIcon from '@material-ui/icons/Warning'
-import green from '@material-ui/core/colors/green'
-
-const styles = theme => ({
-  itemRow: {
-    height: 33
-  },
-  error: {
-    color: theme.palette.error.light
-  },
-  icon: {
-    height: '1em',
-    width: '1em',
-    verticalAlign: 'bottom'
-  },
-  nameCell: {
-    width: '50%'
-  }
-})
+import { ProgressBar, Icon, Spinner, Intent } from '@blueprintjs/core'
 
 const ProgressItem = (props) => {
-  const { classes, item, theme } = props
+  const { item } = props
 
   return (
-    <TableRow key={item.key} className={classes.itemRow}>
-      <TableCell className={classes.nameCell}>
+    <tr key={item.key}>
+      <td>
         {item.name}
-      </TableCell>
-      <TableCell className={classes.progressCell}>
+      </td>
+      <td>
         <span>
-          {item.progress && !item.error && !item.success && <LinearProgress variant='determinate' value={item.progress} />}
-          {!item.progress && <Typography>Awaiting Start</Typography>}
-          {item.success && <DoneIcon className={classes.icon} nativeColor={green[500]} />}
-          {item.error && <Typography className={classes.error}><WarningIcon className={classes.icon} nativeColor={theme.palette.error.main} /> {item.error}</Typography>}
+          <ProgressBar value={item.progress} intent={item.progress === 100 ? Intent.SUCCESS : Intent.PRIMARY} animate={(item.progress < 100)} />
         </span>
-      </TableCell>
-    </TableRow>
+      </td>
+      <td>
+        {!item.success && !item.error && <Spinner size={Spinner.SIZE_SMALL} intent={Intent.PRIMARY} />}
+        {item.success && <Icon icon='tick' intent={Intent.SUCCESS} />}
+        {item.error && <p><Icon icon='warning-sign' intent={Intent.DANGER} /> {item.error}</p>}
+      </td>
+    </tr>
   )
 }
 
 ProgressItem.propTypes = {
-  classes: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired
 }
 
-export default withTheme()(withStyles(styles)(ProgressItem))
+export default ProgressItem

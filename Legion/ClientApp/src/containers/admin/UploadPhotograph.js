@@ -8,11 +8,7 @@ import { uploadPhotograph } from '../../actions'
 import { getAuthenticationToken, getUploadingPhotographs } from '../../selectors'
 import DropTarget from '../../components/admin/DropTarget'
 import UploadProgressDisplay from '../../components/admin/UploadProgressDisplay'
-import { Dialog, DialogTitle, DialogContent, Typography, DialogActions, Button } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-
-const styles = theme => ({
-})
+import { Dialog, Classes, Button, Intent } from '@blueprintjs/core'
 
 class PhotographUpload extends PureComponent {
   constructor (props) {
@@ -21,7 +17,8 @@ class PhotographUpload extends PureComponent {
     this.state = {
       photographs: null,
       rejected: null,
-      showReset: false
+      showReset: false,
+      showComplete: false
     }
   }
 
@@ -39,7 +36,7 @@ class PhotographUpload extends PureComponent {
       this.reset()
       this.props.dispatch(push('/admin'))
     } else {
-      this.setState({ showReset: true })
+      this.setState({ showReset: true, showComplete: false })
     }
   }
 
@@ -52,7 +49,7 @@ class PhotographUpload extends PureComponent {
   }
 
   render = () => {
-    const { token, photographs, classes, showReset } = this.props
+    const { token, photographs, showReset } = this.props
     if (!token) {
       return <Redirect to='/admin/login' />
     }
@@ -61,22 +58,24 @@ class PhotographUpload extends PureComponent {
     const hasErrors = this.hasErrors(photographs)
 
     return (
-      <div>
+      <>
         { !photographs && <DropTarget accept='image/jpeg' onDrop={this.onUpload} /> }
         { photographs && <UploadProgressDisplay uploads={photographs} reset={showReset} onReset={this.reset} />}
-        <Dialog open={!(!photographs) && !isIncomplete}>
-          <DialogTitle>
+        <Dialog isOpen={this.state.showComplete && !isIncomplete}>
+          <div className={Classes.DIALOG_HEADER}>
             Upload Complete
-          </DialogTitle>
-          <DialogContent>
-            {!hasErrors && <Typography>Upload Complete</Typography>}
-            {hasErrors && <Typography>Upload complete with errors</Typography>}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCompleteAcknowledged} className={classes.button} color='primary' variant='raised'>OK</Button>
-          </DialogActions>
+          </div>
+          <div className={Classes.DRAWER_BODY}>
+            {!hasErrors && <p>Upload Complete</p>}
+            {hasErrors && <p>Upload complete with errors</p>}
+          </div>
+          <div className={Classes.DRAWER_FOOTER}>
+            <Button
+              onClick={this.handleCompleteAcknowledged}
+              intent={Intent.PRIMARY}>OK</Button>
+          </div>
         </Dialog>
-      </div>
+      </>
     )
   }
 }
@@ -90,4 +89,4 @@ const mapStateToProps = (state) => ({
   photographs: getUploadingPhotographs(state)
 })
 
-export default withStyles(styles)(connect(mapStateToProps)(PhotographUpload))
+export default connect(mapStateToProps)(PhotographUpload)

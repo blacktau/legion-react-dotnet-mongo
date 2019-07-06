@@ -1,52 +1,37 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Card, CardContent, Table, CardHeader, TableHead, TableRow, TableCell, TableBody, CardActions, Button } from '@material-ui/core'
-import { withStyles, withTheme } from '@material-ui/core/styles'
 import ProgressItem from './ProgressItem'
-
-const styles = theme => ({
-  card: {
-    marginTop: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit * 4,
-    marginRight: theme.spacing.unit * 4
-  },
-  cardContent: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center'
-  }
-})
+import { Card, Button, Classes, HTMLTable } from '@blueprintjs/core'
 
 class UploadProgressDisplay extends PureComponent {
   render = () => {
-    const { classes, uploads, reset, onReset } = this.props
+    const { uploads, onReset } = this.props
+    const incomplete = uploads.some((p) => { return !(p.success || p.error) })
     return (
       <div>
-        <Card className={classes.card}>
-          <CardHeader title='Uploading Photographs' />
-          <CardContent className={classes.cardContent}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Filename</TableCell>
-                  <TableCell>Progress</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+        <Card className={Classes.DARK + ' uploadProgressCard'}>
+          <h3 className={Classes.PANEL_STACK_HEADER}>Uploading Photographs</h3>
+          <p>
+            <HTMLTable bordered condensed striped>
+              <thead>
+                <th>
+                  Filename
+                </th>
+                <th>
+                  Progress
+                </th>
+                <th>&nbsp;</th>
+              </thead>
+              <tbody>
                 {uploads.map(item => {
                   return (!item || !item.key)
                     ? null
                     : <ProgressItem key={item.key} item={item} />
                 })}
-              </TableBody>
-            </Table>
-          </CardContent>
-          {reset &&
-            <CardActions>
-              <Button onClick={onReset}>Clear</Button>
-            </CardActions>
-          }
+              </tbody>
+            </HTMLTable>
+          </p>
+          <Button onClick={onReset} disabled={incomplete}>Clear</Button>
         </Card>
       </div>
     )
@@ -54,10 +39,9 @@ class UploadProgressDisplay extends PureComponent {
 }
 
 UploadProgressDisplay.propTypes = {
-  classes: PropTypes.object.isRequired,
   uploads: PropTypes.array.isRequired,
   reset: PropTypes.bool.isRequired,
   onReset: PropTypes.func.isRequired
 }
 
-export default withTheme()(withStyles(styles)(UploadProgressDisplay))
+export default UploadProgressDisplay
