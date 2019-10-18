@@ -1,69 +1,76 @@
 import React, { PureComponent } from 'react'
-import { TableRow, TableCell, Button, withStyles, withTheme, Checkbox } from '@material-ui/core'
-import VisibilityIcon from '@material-ui/icons/Visibility'
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
-import EditIcon from '@material-ui/icons/Edit'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-
-const styles = theme => ({
-  button: {
-    margin: theme.spacing.unit
-  },
-  buttonCell: {
-    width: theme.spacing.unit * 25
-  },
-  thumbNailCell: {
-    width: '75px'
-  }
-})
+import { Button, Intent, Icon, ButtonGroup, Checkbox } from '@blueprintjs/core'
 
 class PhotographListRow extends PureComponent {
+  constructor (props) {
+    super(props)
+    this.state = {
+      selected: false
+    }
+  }
+
   handlePublishClicked = () => {
-    const {onPublish, value} = this.props
+    const { onPublish, value } = this.props
     if (onPublish) {
       onPublish(value)
     }
   }
 
   handleSuppressClicked = () => {
-    const {onSuppress, value} = this.props
+    const { onSuppress, value } = this.props
     if (onSuppress) {
       onSuppress(value)
     }
   }
 
+  handleSelectionChanged = () => {
+    const { selected } = this.state
+    const { onSelected, value, onDeselected } = this.props
+    if (selected) {
+      onSelected(value)
+    } else {
+      onDeselected(value)
+    }
+  }
+
   render = () => {
-    const { classes, value } = this.props
+    const { value } = this.props
 
     return (
-      <TableRow key={value.id}>
-        <TableCell><Checkbox /></TableCell>
-        <TableCell className={classes.thumbNailCell}>
+      <tr key={value.id}>
+        <td>
+          <Checkbox onChange={this.handleSelectionChanged} />
+        </td>
+        <td>
           <img src={'/images/' + value.id + '.jpg?height=50'} alt={value.description} />
-        </TableCell>
-
-        <TableCell>{value.title}</TableCell>
-        <TableCell>{value.uploadedDate}</TableCell>
-        <TableCell>{value.publishedDate}</TableCell>
-        <TableCell className={classes.buttonCell}>
-          <Button variant='fab' color='primary' aria-label='Edit' className={classes.button} component={Link} to={'/photograph/' + value.id}><EditIcon /></Button>
-          {!value.isPublished
-            ? <Button variant='fab' color='primary' aria-label='Publish' className={classes.button} onClick={this.handlePublishClicked}><VisibilityIcon /></Button>
-            : <Button variant='fab' color='primary' aria-label='Suppress' className={classes.button} onClick={this.handleSuppressClicked}><VisibilityOffIcon /></Button>
-          }
-        </TableCell>
-      </TableRow>
+        </td>
+        <td>{value.title}</td>
+        <td>{value.uploadedDate}</td>
+        <td>{value.publishedDate}</td>
+        <td className='actionButtons'>
+          <ButtonGroup>
+            <Button intent={Intent.PRIMARY} component={Link} to={'/admin/photograph/' + value.id}><Icon icon='edit' /></Button>
+            <Button intent={Intent.WARNING} onClick={this.handleDeleteClicked}><Icon icon='delete' /></Button>
+            {!value.isPublished
+              ? <Button intent={Intent.SUCCESS} onClick={this.handlePublishClicked}><Icon icon='eye-on' /></Button>
+              : <Button intent={Intent.WARNING} onClick={this.handleSuppressClicked}><Icon icon='eye-off' /></Button>
+            }
+          </ButtonGroup>
+        </td>
+      </tr>
 
     )
   }
 }
 
 PhotographListRow.propTypes = {
-  classes: PropTypes.object.isRequired,
   onPublish: PropTypes.func.isRequired,
   onSuppress: PropTypes.func.isRequired,
+  onSelected: PropTypes.func.isRequired,
+  onDeselected: PropTypes.func.isRequired,
   value: PropTypes.object.isRequired
 }
 
-export default withTheme()(withStyles(styles)(PhotographListRow))
+export default PhotographListRow

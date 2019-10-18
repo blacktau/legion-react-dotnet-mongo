@@ -1,3 +1,4 @@
 .env
 Mongo/Data/
 Mongo/Home/*
+Legion/wwwroot/

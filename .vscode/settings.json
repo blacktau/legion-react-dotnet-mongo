@@ -5,5 +5,11 @@
     "standard.enable": true,
     "standard.options": {
         "parser" : "babel-eslint"
-    }
+    },
+    "editor.formatOnSave": true,
+    "prettier.jsxBracketSameLine": true,
+    "prettier.jsxSingleQuote": true,
+    "prettier.semi": false,
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "es5"
 }

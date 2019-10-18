@@ -7,31 +7,21 @@ import { changePassword } from '../../actions'
 import ChangePasswordDialog from '../../components/admin/ChangePasswordDialog'
 import { getAuthenticationToken } from '../../selectors'
 
-class ChangePassword extends PureComponent {
-  handleAcknowledgementClosed = () => {
-    this.props.dispatch(changePassword.changeAcknowledged())
-    this.props.dispatch(push('/admin'))
+const ChangePassword = ({ token, dispatch }) => {
+  const handleAcknowledgementClosed = () => {
+    dispatch(changePassword.changeAcknowledged())
+    dispatch(push('/admin'))
   }
 
-  render = () => {
-    const { token } = this.props
-
-    if (!token) {
-      return <Redirect to='/admin/login' />
-    }
-
-    return (
-      <ChangePasswordDialog />
-    )
-  }
+  return !token ? <Redirect to='/admin/login' /> : <ChangePasswordDialog />
 }
 
 ChangePassword.propTypes = {
-  token: PropTypes.string
+  token: PropTypes.string,
 }
 
-const mapStateToProps = (state) => ({
-  token: getAuthenticationToken(state)
+const mapStateToProps = state => ({
+  token: getAuthenticationToken(state),
 })
 
 export default connect(mapStateToProps)(ChangePassword)

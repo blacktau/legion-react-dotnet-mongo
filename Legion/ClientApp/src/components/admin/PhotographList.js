@@ -1,23 +1,18 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import PhotographListRow from './PhotographListRow'
-import PhotographListHeader from './PhotographListHeader'
+import { HTMLTable } from '@blueprintjs/core'
 
 class PhotographList extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      selected: [],
-      columns: this.createColumns()
+      selected: []
     }
   }
 
-  createColumns = () => {
-    return [
-      { id: 'title', numeric: false, disablePadding: true, label: 'Title' },
-      { id: 'uploadedDate', numeric: false, disablePadding: true, label: 'Date Uploaded' },
-      { id: 'publishedDate', numeric: false, disablePadding: true, label: 'Date Published' }
-    ]
+  handleItemSelected = (item) => {
+
   }
 
   render = () => {
@@ -29,32 +24,35 @@ class PhotographList extends PureComponent {
     }
 
     return (
-      <table>
-        <PhotographListHeader
-          numSelected={selected.length}
-          order={order}
-          orderBy={orderBy}
-          onSelectAllClick={this.handleSelectAllClick}
-          onRequestSort={this.handleRequestSort}
-          rowCount={photographs.length}
-          columns={columns} />
-        <tablebody>
+      <HTMLTable bordered condensed striped>
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>Title</th>
+            <th>Uploaded</th>
+            <th>Published</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
           {photographs.map(p => {
             return (
-              <PhotographListRow key={p.id} onPublish={onPublish} onSuppress={onSuppress} value={p} />
+              <PhotographListRow
+                key={p.id}
+                onPublish={onPublish}
+                onSuppress={onSuppress}
+                value={p}
+                onSelected={this.handleItemSelected} />
             )
           })}
-        </tablebody>
-      </t>
+        </tbody>
+      </HTMLTable>
     )
   }
 }
 
 PhotographList.propTypes = {
-  classes: PropTypes.object.isRequired,
-  photographs: PropTypes.array,
-  onPublish: PropTypes.func.isRequired,
-  onSuppress: PropTypes.func.isRequired
+  photographs: PropTypes.array
 }
 
 export default PhotographList

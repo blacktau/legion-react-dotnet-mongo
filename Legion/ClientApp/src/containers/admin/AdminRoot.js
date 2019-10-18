@@ -8,6 +8,8 @@ import Login from './Login'
 import ChangePassword from './ChangePassword'
 import UploadPhotograph from './UploadPhotograph'
 import './admin.scss'
+import ManagePhotographs from './ManagePhotographs'
+import NoMatch from '../NoMatch'
 
 const AdminRoot = () => (
   <>
@@ -16,7 +18,9 @@ const AdminRoot = () => (
       <Route exact path='/admin' component={AdminHome} />
       <Route path='/admin/login' component={Login} />
       <Route path='/admin/photographs/upload' component={UploadPhotograph} />
+      <Route path='/admin/photographs/manage' component={ManagePhotographs} />
       <Route path='/admin/change-password' component={ChangePassword} />
+      <Route component={NoMatch} />
     </Switch>
   </>
 )

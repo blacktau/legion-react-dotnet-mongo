@@ -31,9 +31,12 @@ namespace Legion.ImageResolvers
             return Task.FromResult(date.ToUniversalTime());
         }
 
-        public Task<ImageMetaData> GetMetaDataAsync()
+        public async Task<ImageMetaData> GetMetaDataAsync()
         {
-            throw new System.NotImplementedException();
+            using (var stream = await this.OpenReadAsync())
+            {
+                return await ImageMetaData.ReadAsync(stream);
+            }
         }
 
         public async Task<Stream> OpenReadAsync()

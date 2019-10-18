@@ -34,7 +34,7 @@ class AdminHeader extends React.Component {
                 <Button icon='home' text='Home' />
               </Link>
               <Divider />
-              <Link to='/admin/photographs/admin'>
+              <Link to='/admin/photographs/manage'>
                 <Button icon='media' text='Manage Photos' />
               </Link>
               <Link to='/admin/photographs/upload'>
