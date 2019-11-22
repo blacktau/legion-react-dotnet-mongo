@@ -5,10 +5,10 @@ namespace Legion
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
 
@@ -18,22 +18,18 @@ namespace Legion
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddImageSharpServices();
 
-            services.AddCors();
+            services.AddControllersWithViews();
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddCors();
 
             services.AddOptions();
 
@@ -70,7 +66,7 @@ namespace Legion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -88,18 +84,18 @@ namespace Legion
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
-            app.UseAuthentication();
-
+            app.UseRouting();
             app.UseImageSharp();
 
             app.UseCors();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints => 
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>
@@ -120,17 +116,15 @@ namespace Legion
             return authenticationOptions.TokenSecretBytes;
         }
 
-        private void RegisterMongoDatabase(IServiceCollection services)
-        {
+        private void RegisterMongoDatabase(IServiceCollection services) =>
             services.AddSingleton(
                 serviceProvider =>
-                    {
-                        var mongoSection = this.Configuration.GetSection(MongoDBOptions.SectionName);
-                        var mongoOptions = mongoSection.Get<MongoDBOptions>();
-                        var connectionString = string.Format(mongoOptions.ConnectionString, mongoOptions.WebPassword);
-                        var client = new MongoClient(connectionString);
-                        return client.GetDatabase(mongoSection[nameof(MongoDBOptions.DatabaseName)]);
-                    });
-        }
+                {
+                    var mongoSection = this.Configuration.GetSection(MongoDBOptions.SectionName);
+                    var mongoOptions = mongoSection.Get<MongoDBOptions>();
+                    var connectionString = string.Format(mongoOptions.ConnectionString, mongoOptions.WebPassword);
+                    var client = new MongoClient(connectionString);
+                    return client.GetDatabase(mongoSection[nameof(MongoDBOptions.DatabaseName)]);
+                });
     }
 }

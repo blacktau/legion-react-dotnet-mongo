@@ -1,15 +1,29 @@
 {
     "javascript.validate.enable": false,
-    "standard.usePackageJson": true,
-    "standard.autoFixOnSave": true,
-    "standard.enable": true,
-    "standard.options": {
-        "parser" : "babel-eslint"
-    },
     "editor.formatOnSave": true,
-    "prettier.jsxBracketSameLine": true,
+    "eslint.autoFixOnSave": true,
+    "eslint.workingDirectories": [
+        "Legion/ClientApp/"
+    ],
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "typescript",
+            "autoFix": true
+        },
+        {
+            "language": "typescriptreact",
+            "autoFix": true
+        },
+    ],
+    "typescript.format.enable": true,
+    "typescript.implementationsCodeLens.enabled": true,
+    "typescript.format.semicolons": "remove",
+    "typescript.preferences.quoteStyle": "single",
     "prettier.jsxSingleQuote": true,
-    "prettier.semi": false,
+    "prettier.printWidth": 160,
     "prettier.singleQuote": true,
-    "prettier.trailingComma": "es5"
+    "eslint.lintTask.enable": true,
+    "eslint.enable": true,
 }

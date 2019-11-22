@@ -14,5 +14,7 @@ namespace Legion.Services
         Task AddPhotographAsync(string filePath, string originalFileName);
 
         Task UpdatePhotograph(string id, Photograph photograph);
+
+        Task<List<Photograph>> GetPublished();
     }
 }

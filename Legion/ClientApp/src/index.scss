@@ -30,6 +30,10 @@ body {
 
 .headerLeft {
     float: left;
+
+    a {
+        text-decoration: none;
+    }
 }
 
 .headerRight {
@@ -52,8 +56,29 @@ body {
 
 .headerIcon {
     padding: 10px;
+    fill: white;
 }
 
 .headerClear {
     clear: both;
+}
+
+.photo {
+    margin-bottom: 10px;
+}
+
+.gallery {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    max-width: 90%;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}
+
+.gallery-column {
+    padding-left: 10px;
+    background-clip: padding-box;
 }

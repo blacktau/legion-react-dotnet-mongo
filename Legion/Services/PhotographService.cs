@@ -60,6 +60,11 @@ namespace Legion.Services
             return this.photographRepository.GetAllAsync();
         }
 
+        public Task<List<Photograph>> GetPublished()
+        {
+            return this.photographRepository.GetPublishedAsync();
+        }
+
         public async Task<Photograph> GetPhotographByIdAsync(string id)
         {
             return await this.photographRepository.GetPhotographByIdAsync(id);

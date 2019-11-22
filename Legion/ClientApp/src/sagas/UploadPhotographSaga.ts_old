@@ -1,0 +1,49 @@
+import { call, put, takeEvery, take } from 'redux-saga/effects'
+
+import { uploadPhotographActions, POST_PHOTOGRAPHS } from '../actions/uploadPhotographsActions'
+
+import { createUploadFileChannel } from '../utils/fetchUtils'
+import { UploadPhotographAction } from '../store/UploadPhotographStore'
+import { UploadProgressItem } from '../types/UploadProgressItem'
+
+function* initialisePhotographUploadWorker({ files }: UploadPhotographAction) {
+  const uploads: Array<UploadProgressItem> = []
+  for (let i = 0, ln = files.length; i < ln; ++i) {
+    uploads[i] = {
+      key: files[i].name,
+      name: files[i].name,
+      progress: 0,
+      error: undefined,
+      success: false
+    }
+  }
+
+  yield put(uploadPhotographActions.initialised(uploads))
+  for (let i = 0, ln = files.length; i < ln; ++i) {
+    yield put(uploadPhotographActions.request(files[i]))
+  }
+}
+
+function* uploadPhotographWorker({ file }: UploadPhotographAction) {
+  const channel = yield call(createUploadFileChannel, '/api/photograph/', file)
+  while (true) {
+    const { progress = 0, error, success } = yield take(channel)
+
+    if (error) {
+      yield put(uploadPhotographActions.failure(file.name, error))
+      return
+    }
+
+    if (success) {
+      yield put(uploadPhotographActions.success(file.name))
+      return
+    }
+
+    yield put(uploadPhotographActions.progress(file.name, progress))
+  }
+}
+
+export function* UploadPhotographSaga() {
+  yield takeEvery(POST_PHOTOGRAPHS.REQUEST, uploadPhotographWorker)
+  yield takeEvery(POST_PHOTOGRAPHS.INITIALISE, initialisePhotographUploadWorker)
+}

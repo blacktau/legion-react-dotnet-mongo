@@ -45,6 +45,11 @@ namespace Legion.Repositories
             return await this.photographCollection.AsQueryable().OrderBy(_ => _.UploadedDate).ToListAsync();
         }
 
+        public async Task<List<Photograph>> GetPublishedAsync()
+        {
+            return await this.photographCollection.AsQueryable().Where(p => p.IsPublished == true).OrderBy(_ => _.PublishedDate).ToListAsync();
+        }
+
         public async Task<Stream> ReadImageAsStreamAsync(string fileId)
         {
             var id = ObjectId.Parse(fileId);
@@ -73,7 +78,7 @@ namespace Legion.Repositories
                 throw new FileNotFoundException($"Failed to find file {fileName}", fileName);
             }
 
-            using (var stream = File.OpenRead(fileName))
+            await using (FileStream stream = File.OpenRead(fileName))
             {
                 var uploadOptions = new GridFSUploadOptions
                 {
@@ -89,9 +94,6 @@ namespace Legion.Repositories
             }
         }
 
-        public Task<int> GetPhotographsCount()
-        {
-            return this.photographCollection.AsQueryable().CountAsync();
-        }
+        public Task<int> GetPhotographsCount() => this.photographCollection.AsQueryable().CountAsync();
     }
 }

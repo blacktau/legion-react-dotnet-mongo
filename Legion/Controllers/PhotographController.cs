@@ -29,11 +29,19 @@ namespace Legion.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<List<Photograph>>> GetAll()
         {
             var photographs = await this.photographService.GetAll();
             this.logger.LogInformation($"GetAll: returning {photographs.Count}");
+            return this.Ok(photographs);
+        }
+
+        [HttpGet("published")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<Photograph>>> GetPublished()
+        {
+            var photographs = await this.photographService.GetPublished();
+            this.logger.LogInformation($"GetPublished: returning {photographs.Count}");
             return this.Ok(photographs);
         }
 

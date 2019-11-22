@@ -23,5 +23,7 @@ namespace Legion.Repositories
         Task<Stream> ReadImageAsStreamAsync(string photoId);
 
         Task<int> GetPhotographsCount();
+
+        Task<List<Photograph>> GetPublishedAsync();
     }
 }
