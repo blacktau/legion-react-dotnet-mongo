@@ -1,6 +1,6 @@
 namespace Legion.Configuration
 {
-    public class MongoDBOptions
+    public class MongoDbOptions
     {
         public const string SectionName = "Mongo";
 

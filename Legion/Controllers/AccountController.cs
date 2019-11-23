@@ -1,25 +1,15 @@
 namespace Legion.Controllers
 {
-    using System;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Security.Claims;
-    using System.Text;
     using System.Threading.Tasks;
 
     using Legion.Attributes;
-    using Legion.Configuration;
     using Legion.Models;
     using Legion.Models.Account;
     using Legion.Services;
 
-    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using Microsoft.IdentityModel.Tokens;
 
     [SecurityHeaders]
     [Authorize]
@@ -44,7 +34,7 @@ namespace Legion.Controllers
         [HttpPost("authenticateUser")]
         public async Task<IActionResult> AuthenticateUser([FromBody] UserCredentials userCredentials)
         {
-            var user = await this.userService.GetAuthenticatedUserAsync(userCredentials.Username, userCredentials.Password);
+            User user = await this.userService.GetAuthenticatedUserAsync(userCredentials.Username, userCredentials.Password);
 
             if (user == null)
             {
@@ -68,7 +58,7 @@ namespace Legion.Controllers
         {
             var username = this.User.Identity?.Name;
 
-            var user = await this.userService.GetAuthenticatedUserAsync(username, changePasswordRequest.CurrentPassword);
+            User user = await this.userService.GetAuthenticatedUserAsync(username, changePasswordRequest.CurrentPassword);
 
             if (user == null)
             {
@@ -82,11 +72,11 @@ namespace Legion.Controllers
                 return this.UnprocessableEntity(new ErrorResponse { Message = "New Password and Repeated Password must match.", ErrorCode = ErrorCodes.MismatchedPasswords });
             }
 
-            var validationResult = await this.userService.ValidateNewPassword(user, changePasswordRequest.NewPassword);
+            PasswordValidationResult validationResult = await this.userService.ValidateNewPassword(user, changePasswordRequest.NewPassword);
 
             if (validationResult != PasswordValidationResult.Valid)
             {
-                var error = this.GetValidationError(validationResult);
+                ErrorResponse error = this.GetValidationError(validationResult);
                 this.logger.LogInformation($"Invalid Change Password attempt for ({username}): {error.Message}");
                 return this.UnprocessableEntity(error);
             }
@@ -101,12 +91,20 @@ namespace Legion.Controllers
             switch (validationResult)
             {
                 case PasswordValidationResult.NewPasswordMatch:
-                    return new ErrorResponse { ErrorCode = ErrorCodes.NewPasswordSameAsOld, Message = "New Password matches previous password." };
+                    return new ErrorResponse
+                    {
+                        ErrorCode = ErrorCodes.NewPasswordSameAsOld,
+                        Message = "New Password matches previous password.",
+                    };
                 case PasswordValidationResult.RequirementsNotMet:
-                    return new ErrorResponse { ErrorCode = ErrorCodes.PasswordComplexityNotMet, Message = "The password complexity Requirements are not met." };
+                    return new ErrorResponse
+                    {
+                        ErrorCode = ErrorCodes.PasswordComplexityNotMet,
+                        Message = "The password complexity Requirements are not met."
+                    };
+                default:
+                    return new ErrorResponse {ErrorCode = ErrorCodes.UnknownError, Message = "Unknown Error."};
             }
-
-            return new ErrorResponse { ErrorCode = ErrorCodes.UnknownError, Message = "Unknown Error." };
         }
     }
 }

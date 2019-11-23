@@ -1,9 +1,9 @@
 import React from 'react'
 import { ProgressBar, Icon, Spinner, Intent } from '@blueprintjs/core'
-import { UploadProgressItem } from '../../types/UploadProgressItem'
+import { FileUpload } from '../../types/FileUpload'
 
 type ProgressItemProps = {
-  item: UploadProgressItem
+  item: FileUpload
   key: string
 }
 

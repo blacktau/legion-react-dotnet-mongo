@@ -6,8 +6,8 @@ import { Action } from 'redux'
 const LOGOUT = createActionTypes('LOGOUT')
 
 const logoutActions = {
-  request: (): Action<string> => createAction(LOGOUT[REQUEST]),
-  success: (): Action<string> => createAction(LOGOUT[SUCCESS])
+  request: (): Action<string> => createAction(LOGOUT[REQUEST], undefined),
+  success: (): Action<string> => createAction(LOGOUT[SUCCESS], undefined)
 }
 
 export { LOGOUT, logoutActions }

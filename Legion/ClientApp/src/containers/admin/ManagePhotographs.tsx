@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Classes, Spinner } from '@blueprintjs/core'
-import { useSelector } from 'react-redux'
-import { Redirect } from 'react-router-dom'
-
 import PhotographList from '../../components/admin/PhotographList'
-import { isAuthenticated } from '../../selectors'
-import { getAllPhotographs } from '../../webapi/photographs/getAllPhotographs-client'
+import { getAllPhotographs } from '../../webapi/photographs'
 import { Photograph } from '../../types/Photograph'
 
 const ManagePhotographs = () => {
-  const authenticated = useSelector(isAuthenticated)
   const [inProgress, setInProgress] = useState(false)
   const [photographs, setPhotographs] = useState<Array<Photograph> | undefined>(undefined)
 
   useEffect(() => {
-    if (!authenticated || inProgress) {
+    if (inProgress) {
       return
     }
 
@@ -27,10 +22,6 @@ const ManagePhotographs = () => {
         setInProgress(false)
       })
   }, [])
-
-  if (!authenticated) {
-    return <Redirect to='/admin/login' />
-  }
 
   return (
     <Card className={Classes.DARK + ' photographList'}>

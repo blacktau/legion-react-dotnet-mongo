@@ -2,67 +2,72 @@
 /* global */
 
 import { POST_PHOTOGRAPHS } from '../actions/uploadPhotographsActions'
-import { UploadProgressItem } from '../types/UploadProgressItem'
-import { RequestError } from '../webapi/api-client'
+import { FileUpload } from '../types/FileUpload'
+import { Action } from 'redux'
 
 export type UploadPhotographStoreState = {
-  uploads: Array<UploadProgressItem>
+  uploads: Array<FileUpload>
 }
 
-export type UploadPhotographAction = {
-  type: string
-  file: File
-  files: File[]
-  filename: string
-  error: RequestError
+export type InitialisePhotographUpload = {
+  uploads: FileUpload[]
+}
+
+export type UploadPhotographUpdateAction = {
+  upload: FileUpload
+}
+
+export type UploadPhotographProgressAction = {
   progress: number
-} & UploadPhotographStoreState
+} & UploadPhotographUpdateAction
+
+export type UploadPhotographErrorAction = {
+  error: string
+} & UploadPhotographUpdateAction
 
 export const initialState: UploadPhotographStoreState = {
-  uploads: new Array<UploadProgressItem>()
+  uploads: new Array<FileUpload>()
 }
 
-export const reducer = (state: UploadPhotographStoreState = initialState, action: UploadPhotographAction): UploadPhotographStoreState => {
+export const reducer = (state: UploadPhotographStoreState = initialState, action: (InitialisePhotographUpload | UploadPhotographProgressAction | UploadPhotographErrorAction) & Action<string>): UploadPhotographStoreState => {
   const { type } = action
 
   switch (type) {
     case POST_PHOTOGRAPHS.INITIALISED: {
-      const nextState = { ...state }
-      const { uploads } = action
-      nextState.uploads = uploads
-      return nextState
+      const { uploads } = action as InitialisePhotographUpload
+      return { ...state, uploads: uploads }
     }
 
     case POST_PHOTOGRAPHS.REQUEST: {
-      const { file } = action
+      const { upload } = action as UploadPhotographUpdateAction
 
       return {
         ...state,
-        uploads: state.uploads.map((upload, _i) => (upload.name === file.name ? { ...upload, progress: 0.01 } : upload))
+        uploads: state.uploads.map((uploadEntry, _i) => (uploadEntry.key === upload.key ? { ...uploadEntry, progress: 0.01 } : uploadEntry))
       }
     }
 
     case POST_PHOTOGRAPHS.SUCCESS: {
-      const { filename } = action
+      const { upload } = action as UploadPhotographUpdateAction
       return {
         ...state,
-        uploads: state.uploads.map((upload, _i) => (upload.name === filename ? { ...upload, success: true } : upload))
+        uploads: state.uploads.map((uploadEntry, _i) => (uploadEntry.key === upload.key ? { ...uploadEntry, success: true } : uploadEntry))
       }
     }
 
     case POST_PHOTOGRAPHS.FAILURE: {
-      const { filename, error } = action
+      const { upload, error } = action as UploadPhotographErrorAction
       return {
         ...state,
-        uploads: state.uploads.map((upload, _i) => (upload.name === filename ? { ...upload, success: false, error: error } : upload))
+        uploads: state.uploads.map((uploadEntry, _i) => (uploadEntry.key === upload.key ? { ...uploadEntry, success: false, error: error } : uploadEntry))
       }
     }
 
     case POST_PHOTOGRAPHS.PROGRESS: {
-      const { filename, progress } = action
+      const { upload, progress } = action as UploadPhotographProgressAction
       return {
         ...state,
-        uploads: state.uploads.map((upload, _i) => (upload.name === filename ? { ...upload, progress: progress * 100 } : upload))
+        uploads: state.uploads.map((uploadEntry: FileUpload) => (uploadEntry.key === upload.key ? { ...uploadEntry, progress: progress * 100 } : uploadEntry))
       }
     }
 

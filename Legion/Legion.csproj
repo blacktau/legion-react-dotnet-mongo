@@ -15,8 +15,8 @@
     <PackageReference Include="MetadataExtractor" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
     <PackageReference Include="MongoDB.Driver.GridFS" Version="2.8.1" />
@@ -38,6 +38,8 @@
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <None Include="ClientApp\.prettierrc.js" />
+    <None Include="ClientApp\src\components\admin\AuthenticatedRoute.tsx" />
+    <None Include="ClientApp\src\webapi\photographs\uploadPhotograph-client.ts" />
   </ItemGroup>
 
   <ItemGroup>

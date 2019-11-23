@@ -1,5 +1,5 @@
 import React from 'react'
-import Dropzone from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 import { Icon, Classes, Card } from '@blueprintjs/core'
 
 type DropTargetProps = {
@@ -8,18 +8,19 @@ type DropTargetProps = {
 }
 
 const DropTarget = ({ onDrop, accept }: DropTargetProps) => {
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ accept: accept, onDrop: onDrop })
   return (
     <Card className={Classes.DARK + ' dropCard'} interactive>
       <h3>Upload Photographs</h3>
-      <Dropzone accept={accept} onDrop={onDrop}>
-        {({ getRootProps, getInputProps }) => (
-          <div {...getRootProps({ className: 'dropTarget' })}>
-            <Icon icon="cloud-upload" iconSize={128} />
-            <p>Drop photographs here to upload</p>
-            <input {...getInputProps()} />
-          </div>
+      <div {...getRootProps({ className: 'dropTarget' })}>
+        <Icon icon='cloud-upload' iconSize={128} />
+        {isDragActive ? (
+          <p>Drop the photographs here to upload</p>
+        ) : (
+          <p>Drag and drop Photographs here or click to select files</p>
         )}
-      </Dropzone>
+        <input {...getInputProps()} />
+      </div>
     </Card>
   )
 }

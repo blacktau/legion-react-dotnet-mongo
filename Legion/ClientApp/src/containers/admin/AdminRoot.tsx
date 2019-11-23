@@ -10,16 +10,17 @@ import UploadPhotograph from './UploadPhotograph'
 import './admin.scss'
 import ManagePhotographs from './ManagePhotographs'
 import NoMatch from '../NoMatch'
+import { AuthenticatedRoute } from '../../components/admin/AuthenticatedRoute'
 
 const AdminRoot = () => (
   <>
     <Route path='/admin' component={AdminLayout} />
     <Switch>
-      <Route exact path='/admin' component={AdminHome} />
+      <AuthenticatedRoute exact path='/admin' component={AdminHome} />
       <Route path='/admin/login' component={Login} />
-      <Route path='/admin/photographs/upload' component={UploadPhotograph} />
-      <Route path='/admin/photographs/manage' component={ManagePhotographs} />
-      <Route path='/admin/change-password' component={ChangePassword} />
+      <AuthenticatedRoute path='/admin/photographs/upload' component={UploadPhotograph} />
+      <AuthenticatedRoute path='/admin/photographs/manage' component={ManagePhotographs} />
+      <AuthenticatedRoute path='/admin/change-password' component={ChangePassword} />
       <Route component={NoMatch} />
     </Switch>
   </>

@@ -31,7 +31,7 @@ namespace Legion.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Photograph>>> GetAll()
         {
-            var photographs = await this.photographService.GetAll();
+            List<Photograph> photographs = await this.photographService.GetAll();
             this.logger.LogInformation($"GetAll: returning {photographs.Count}");
             return this.Ok(photographs);
         }
@@ -40,7 +40,7 @@ namespace Legion.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Photograph>>> GetPublished()
         {
-            var photographs = await this.photographService.GetPublished();
+            List<Photograph> photographs = await this.photographService.GetPublished();
             this.logger.LogInformation($"GetPublished: returning {photographs.Count}");
             return this.Ok(photographs);
         }
@@ -49,7 +49,7 @@ namespace Legion.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<Photograph>> GetById(string id)
         {
-            var photograph = await this.photographService.GetPhotographByIdAsync(id);
+            Photograph photograph = await this.photographService.GetPhotographByIdAsync(id);
             if (photograph == null)
             {
                 return this.NotFound();
@@ -68,16 +68,16 @@ namespace Legion.Controllers
         [HttpPost]
         public async Task<ActionResult> AddPhotographs(IFormFile file)
         {
-            long size = file.Length;
-
-            var filePath = Path.GetTempFileName();
-
             if (file == null || file.Length <= 0)
             {
                 return this.BadRequest();
             }
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var size = file.Length;
+
+            var filePath = Path.GetTempFileName();
+
+            await using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }

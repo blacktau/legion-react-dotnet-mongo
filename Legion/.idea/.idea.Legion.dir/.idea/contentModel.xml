@@ -28,12 +28,6 @@
         <e p="node_modules/@jest/types" t="IncludeRecursive" />
         <e p="node_modules/@mrmlnc/readdir-enhanced" t="IncludeRecursive" />
         <e p="node_modules/@nodelib/fs.stat" t="IncludeRecursive" />
-        <e p="node_modules/@redux-saga/core" t="IncludeRecursive" />
-        <e p="node_modules/@redux-saga/deferred" t="IncludeRecursive" />
-        <e p="node_modules/@redux-saga/delay-p" t="IncludeRecursive" />
-        <e p="node_modules/@redux-saga/is" t="IncludeRecursive" />
-        <e p="node_modules/@redux-saga/symbols" t="IncludeRecursive" />
-        <e p="node_modules/@redux-saga/types" t="IncludeRecursive" />
         <e p="node_modules/@types" t="IncludeRecursive">
           <e p="babel__generator" t="IncludeRecursive" />
           <e p="babel__template" t="IncludeRecursive" />
@@ -108,7 +102,6 @@
         <e p="node_modules/react-scripts" t="IncludeRecursive" />
         <e p="node_modules/realpath-native" t="IncludeRecursive" />
         <e p="node_modules/redux" t="IncludeRecursive" />
-        <e p="node_modules/redux-saga" t="IncludeRecursive" />
         <e p="node_modules/resize-observer-polyfill" t="IncludeRecursive" />
         <e p="node_modules/rimraf" t="IncludeRecursive" />
         <e p="node_modules/rxjs" t="IncludeRecursive" />
@@ -186,7 +179,6 @@
             <e p="authoriseActions.ts" t="Include" />
             <e p="createAction.ts" t="Include" />
             <e p="createRequestActions.ts" t="Include" />
-            <e p="getPublishedPhotographsActions.ts" t="Include" />
             <e p="logoutActions.ts" t="Include" />
             <e p="uploadPhotographsActions.ts" t="Include" />
           </e>
@@ -197,6 +189,7 @@
               <e p="AdminHeader.tsx" t="Include" />
               <e p="AdminLayout.tsx" t="Include" />
               <e p="AdminToaster.tsx" t="Include" />
+              <e p="AuthenticatedRoute.tsx" t="Include" />
               <e p="ChangePasswordDialog.tsx" t="Include" />
               <e p="DropTarget.tsx" t="Include" />
               <e p="LockButton.tsx" t="Include" />
@@ -229,9 +222,6 @@
           <e p="react-app-env.d.ts" t="Include" />
           <e p="registerServiceWorker.ts" t="Include" />
           <e p="routes.tsx" t="Include" />
-          <e p="sagas" t="Include">
-            <e p="UploadPhotographSaga.ts_old" t="Include" />
-          </e>
           <e p="selectors" t="Include">
             <e p="index.ts" t="Include" />
           </e>
@@ -241,8 +231,8 @@
             <e p="configureStore.ts" t="Include" />
           </e>
           <e p="types" t="Include">
+            <e p="FileUpload.ts" t="Include" />
             <e p="Photograph.ts" t="Include" />
-            <e p="UploadProgressItem.ts" t="Include" />
             <e p="User.ts" t="Include" />
             <e p="react-masonry.d.ts" t="Include" />
           </e>
@@ -253,12 +243,13 @@
               <e p="index.ts" t="Include" />
             </e>
             <e p="api-client.ts" t="Include" />
-            <e p="fetchUtils.ts" t="Include" />
             <e p="photographs" t="Include">
               <e p="getAllPhotographs-client.ts" t="Include" />
               <e p="getPublishedPhotographs-client.ts" t="Include" />
               <e p="index.ts" t="Include" />
+              <e p="uploadPhotograph-client.ts" t="Include" />
             </e>
+            <e p="uploadFile.ts" t="Include" />
           </e>
         </e>
         <e p="tsconfig.json" t="Include" />
@@ -329,6 +320,7 @@
       <e p="appsettings.json" t="Include" />
       <e p="bin" t="ExcludeRecursive" />
       <e p="code-analysis.ruleset" t="Include" />
+      <e p="global.json" t="Include" />
       <e p="obj" t="ExcludeRecursive">
         <e p="Debug" t="Include">
           <e p="netcoreapp3.0" t="Include">
@@ -9655,6 +9647,28 @@
                                 <e p="c" t="Include">
                                   <e p="f312d53ba90c.jpg" t="Include" />
                                   <e p="f312d53ba90c.meta" t="Include" />
+                                </e>
+                              </e>
+                            </e>
+                          </e>
+                        </e>
+                      </e>
+                    </e>
+                  </e>
+                </e>
+              </e>
+              <e p="6" t="Include">
+                <e p="d" t="Include">
+                  <e p="2" t="Include">
+                    <e p="9" t="Include">
+                      <e p="e" t="Include">
+                        <e p="6" t="Include">
+                          <e p="9" t="Include">
+                            <e p="8" t="Include">
+                              <e p="5" t="Include">
+                                <e p="5" t="Include">
+                                  <e p="f36d29e69855.jpg" t="Include" />
+                                  <e p="f36d29e69855.meta" t="Include" />
                                 </e>
                               </e>
                             </e>

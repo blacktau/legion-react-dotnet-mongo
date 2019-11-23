@@ -4,8 +4,8 @@ import { Photograph } from '../../types/Photograph'
 type GetPublishedPhotographsResponse = Array<Photograph>
 
 const handleGetPublishedPhotographsError = (error: RequestError) => {
-  let message = error.innerError ? error.innerError.message : error.message
-  let code = error.innerError ? error.innerError.errorCode : error.errorCode
+  const message = error.innerError ? error.innerError.message : error.message
+  const code = error.innerError ? error.innerError.errorCode : error.errorCode
   throw new RequestError(code, message)
 }
 

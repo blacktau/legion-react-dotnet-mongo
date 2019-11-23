@@ -1,10 +1,10 @@
 import React from 'react'
 import ProgressItem from './ProgressItem'
 import { Card, Button, Classes, HTMLTable } from '@blueprintjs/core'
-import { UploadProgressItem } from '../../types/UploadProgressItem'
+import { FileUpload } from '../../types/FileUpload'
 
 type UploadProgressDisplayProps = {
-  uploads: Array<UploadProgressItem>
+  uploads: Array<FileUpload>
   onReset: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 

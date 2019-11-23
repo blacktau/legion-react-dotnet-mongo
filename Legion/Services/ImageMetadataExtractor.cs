@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Legion.Services
 {
     using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace Legion.Services
         {
             FileType fileType;
 
-            using (var stream = System.IO.File.OpenRead(filePath))
+            using (FileStream stream = System.IO.File.OpenRead(filePath))
             {
                 fileType = MetadataExtractor.Util.FileTypeDetector.DetectFileType(stream);
             }
@@ -41,6 +43,7 @@ namespace Legion.Services
             {
                 case FileType.Jpeg:
                     return "image/jpeg";
+
                 default:
                     return string.Empty;
             }

@@ -120,11 +120,11 @@ namespace Legion
             services.AddSingleton(
                 serviceProvider =>
                 {
-                    var mongoSection = this.Configuration.GetSection(MongoDBOptions.SectionName);
-                    var mongoOptions = mongoSection.Get<MongoDBOptions>();
+                    var mongoSection = this.Configuration.GetSection(MongoDbOptions.SectionName);
+                    var mongoOptions = mongoSection.Get<MongoDbOptions>();
                     var connectionString = string.Format(mongoOptions.ConnectionString, mongoOptions.WebPassword);
                     var client = new MongoClient(connectionString);
-                    return client.GetDatabase(mongoSection[nameof(MongoDBOptions.DatabaseName)]);
+                    return client.GetDatabase(mongoSection[nameof(MongoDbOptions.DatabaseName)]);
                 });
     }
 }

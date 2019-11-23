@@ -8,38 +8,40 @@ namespace Legion.Attributes
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             var result = context.Result;
-            if (result is ViewResult)
+            if (!(result is ViewResult))
             {
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
-                AddResponseHeaderIfMissing(context, "X-Content-Type-Options", "nosniff");
-
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-                AddResponseHeaderIfMissing(context, "X-Frame-Options", "SAMEORIGIN");
-
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
-                var csp = "default-src 'self'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
-
-                // also consider adding upgrade-insecure-requests once you have HTTPS in place for production
-                // csp += "upgrade-insecure-requests;";
-                // also an example if you need client images to be displayed from twitter
-                // csp += "img-src 'self' https://pbs.twimg.com;";
-
-                // once for standards compliant browsers
-                AddResponseHeaderIfMissing(context, "Content-Security-Policy", csp);
-
-                // and once again for IE
-                AddResponseHeaderIfMissing(context, "X-Content-Security-Policy", csp);
-
-                // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
-                AddResponseHeaderIfMissing(context, "Referrer-Policy", "no-referrer");
+                return;
             }
+
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+            AddResponseHeaderIfMissing(context, "X-Content-Type-Options", "nosniff");
+
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
+            AddResponseHeaderIfMissing(context, "X-Frame-Options", "SAMEORIGIN");
+
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
+            var csp = "default-src 'self'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self';";
+
+            // also consider adding upgrade-insecure-requests once you have HTTPS in place for production
+            // csp += "upgrade-insecure-requests;";
+            // also an example if you need client images to be displayed from twitter
+            // csp += "img-src 'self' https://pbs.twimg.com;";
+
+            // once for standards compliant browsers
+            AddResponseHeaderIfMissing(context, "Content-Security-Policy", csp);
+
+            // and once again for IE
+            AddResponseHeaderIfMissing(context, "X-Content-Security-Policy", csp);
+
+            // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
+            AddResponseHeaderIfMissing(context, "Referrer-Policy", "no-referrer");
         }
 
-        private static void AddResponseHeaderIfMissing(ResultExecutingContext context, string headerkey, string value)
+        private static void AddResponseHeaderIfMissing(ActionContext context, string headerKey, string value)
         {
-            if (!context.HttpContext.Response.Headers.ContainsKey(headerkey))
+            if (!context.HttpContext.Response.Headers.ContainsKey(headerKey))
             {
-                context.HttpContext.Response.Headers.Add(headerkey, value);
+                context.HttpContext.Response.Headers.Add(headerKey, value);
             }
         }
     }

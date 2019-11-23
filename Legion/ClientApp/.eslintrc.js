@@ -17,7 +17,7 @@ module.exports = {
 
   plugins: ['react', '@typescript-eslint', 'prettier', 'react-hooks'],
   rules: {
-    'prettier/prettier': ['error', { singleQuote: true, semi: false, jsxSingleQuote: true, printWidth: 128}],
+    'prettier/prettier': ['error', { singleQuote: true, semi: false, jsxSingleQuote: true, printWidth: 240}],
     '@typescript-eslint/explicit-function-return-type': ['off'],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn'
