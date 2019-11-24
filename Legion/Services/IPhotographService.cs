@@ -16,5 +16,8 @@ namespace Legion.Services
         Task UpdatePhotograph(string id, Photograph photograph);
 
         Task<List<Photograph>> GetPublished();
+        
+        Task<Photograph> PublishPhotograph(string id);
+        Task<Photograph> RetractPhotograph(string id);
     }
 }

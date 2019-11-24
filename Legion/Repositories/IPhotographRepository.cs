@@ -25,5 +25,7 @@ namespace Legion.Repositories
         Task<int> GetPhotographsCount();
 
         Task<List<Photograph>> GetPublishedAsync();
+
+        Task UpdatePhotographAsync(Photograph photograph);
     }
 }

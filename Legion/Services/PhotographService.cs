@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Legion.Services
 {
     using System;
@@ -24,14 +26,14 @@ namespace Legion.Services
 
         public async Task AddPhotographAsync(string filePath, string originalFileName)
         {
-            var metaData = this.imageMetadataExtractor.ExtractMetadata(filePath);
+            ImageMetadata metaData = this.imageMetadataExtractor.ExtractMetadata(filePath);
 
             if (string.IsNullOrWhiteSpace(metaData.ObjectName))
             {
                 metaData.ObjectName = originalFileName;
             }
 
-            var keywords = this.ParseKeywords(metaData.Keywords);
+            List<string> keywords = ParseKeywords(metaData.Keywords);
 
             var id = await this.CreatePhotographId(metaData.ObjectName);
 
@@ -55,47 +57,55 @@ namespace Legion.Services
             await this.photographRepository.AddPhotographAsync(photograph);
         }
 
-        public Task<List<Photograph>> GetAll()
+        public Task<List<Photograph>> GetAll() => this.photographRepository.GetAllAsync();
+
+        public Task<List<Photograph>> GetPublished() => this.photographRepository.GetPublishedAsync();
+
+        public async Task<Photograph> PublishPhotograph(string id)
         {
-            return this.photographRepository.GetAllAsync();
+            Photograph photograph = await this.photographRepository.GetPhotographByIdAsync(id);
+            if (photograph == null)
+            {
+                return null;
+            }
+
+            photograph.IsPublished = true;
+            photograph.PublishedDate = DateTime.Now;
+            await this.photographRepository.UpdatePhotographAsync(photograph);
+            return photograph;
         }
 
-        public Task<List<Photograph>> GetPublished()
+        public async Task<Photograph> RetractPhotograph(string id)
         {
-            return this.photographRepository.GetPublishedAsync();
+            Photograph photograph = await this.photographRepository.GetPhotographByIdAsync(id);
+            if (photograph == null)
+            {
+                return null;
+            }
+
+            photograph.IsPublished = false;
+            photograph.PublishedDate = null;
+            await this.photographRepository.UpdatePhotographAsync(photograph);
+            return photograph;
         }
 
-        public async Task<Photograph> GetPhotographByIdAsync(string id)
-        {
-            return await this.photographRepository.GetPhotographByIdAsync(id);
-        }
+        public async Task<Photograph> GetPhotographByIdAsync(string id) => await this.photographRepository.GetPhotographByIdAsync(id);
 
-        public Task UpdatePhotograph(string id, Photograph photograph)
-        {
-            throw new System.NotImplementedException();
-        }
+        public Task UpdatePhotograph(string id, Photograph photograph) => throw new System.NotImplementedException();
+
+        private static List<string> ParseKeywords(string keywordList) => string.IsNullOrWhiteSpace(keywordList) ? null : new List<string>(keywordList.ToLower().Split(';'));
 
         private async Task<string> CreatePhotographId(string title, int next = 1)
         {
-            string idTitle = title.ToLowerInvariant();
-            string id = this.idRegex.Replace(idTitle, "-");
+            var idTitle = title.ToLowerInvariant();
+            var id = this.idRegex.Replace(idTitle, "-");
             if (!(await this.photographRepository.IsExistingPhotographAsync(id)))
             {
                 return id;
             }
 
-            string nextTitle = $"{title} {next}";
-            return await this.CreatePhotographId(nextTitle, next++);
-        }
-
-        private List<string> ParseKeywords(string keywordList)
-        {
-            if (string.IsNullOrWhiteSpace(keywordList))
-            {
-                return null;
-            }
-
-            return new List<string>(keywordList.ToLower().Split(';'));
+            var nextTitle = $"{title} {next}";
+            return await this.CreatePhotographId(nextTitle, ++next);
         }
     }
 }

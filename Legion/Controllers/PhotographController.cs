@@ -58,6 +58,30 @@ namespace Legion.Controllers
             return photograph;
         }
 
+        [HttpPatch("{id}/publish")]
+        public async Task<ActionResult<Photograph>> Publish(string id)
+        {
+            Photograph photograph = await this.photographService.PublishPhotograph(id);
+            if (photograph == null)
+            {
+                return this.NotFound();
+            }
+
+            return photograph;
+        }
+
+        [HttpPatch("{id}/retract")]
+        public async Task<ActionResult<Photograph>> Retract(string id)
+        {
+            Photograph photograph = await this.photographService.RetractPhotograph(id);
+            if (photograph == null)
+            {
+                return this.NotFound();
+            }
+
+            return photograph;
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateOrCreate(string id, [FromBody] Photograph photograph)
         {

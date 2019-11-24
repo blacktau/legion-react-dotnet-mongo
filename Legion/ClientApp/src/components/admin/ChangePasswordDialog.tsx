@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react'
+import React, { useState, ChangeEvent, useCallback } from 'react'
 import { Dialog, Classes, Button, Intent, Toast, Alert, Toaster } from '@blueprintjs/core'
 import { useDispatch } from 'react-redux'
 import { push, RouterAction } from 'react-router-redux'
@@ -14,36 +14,25 @@ const ChangePasswordDialog = () => {
   const [passwordChanged, setPasswordChanged] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
-  const [triggerRequest, setTriggerRequest] = useState(false)
   const [inProgress, setInProgress] = useState(false)
   const [error, setError] = useState<RequestError | undefined>(undefined)
 
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (!triggerRequest) {
-      return
-    }
-
+  const submitRequest = useCallback(async () => {
     setSubmitted(true)
     if (currentPassword && newPassword && repeatedNewPassword) {
       setInProgress(true)
-      changePassword(currentPassword, newPassword, repeatedNewPassword)
-        .then(() => {
-          setInProgress(false)
-          setPasswordChanged(true)
-        })
-        .catch((error: RequestError) => {
-          setError(error)
-          setInProgress(false)
-        })
-        .finally(() => {
-          setTriggerRequest(false)
-        })
-    } else {
-      setTriggerRequest(false)
+      try {
+        await changePassword(currentPassword, newPassword, repeatedNewPassword)
+        setInProgress(false)
+        setPasswordChanged(true)
+      } catch (error) {
+        setError(error)
+        setInProgress(false)
+      }
     }
-  }, [triggerRequest])
+  }, [currentPassword, newPassword, repeatedNewPassword])
 
   return (
     <>
@@ -58,8 +47,7 @@ const ChangePasswordDialog = () => {
         onConfirm={() => {
           dispatch(push('/admin'))
         }}
-        className={Classes.DARK}
-      >
+        className={Classes.DARK}>
         <p>Password Successfully Updated</p>
       </Alert>
       <Dialog isOpen autoFocus enforceFocus icon='lock' className={Classes.DARK} title='Change Password' onClose={(): RouterAction => dispatch(push('/admin'))}>
@@ -106,7 +94,7 @@ const ChangePasswordDialog = () => {
         </div>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button intent={Intent.PRIMARY} onClick={() => setTriggerRequest(true)} disabled={inProgress} loading={inProgress}>
+            <Button intent={Intent.PRIMARY} onClick={() => submitRequest()} disabled={inProgress} loading={inProgress}>
               Change Password
             </Button>
             <Button onClick={() => dispatch(push('/admin'))} disabled={inProgress} loading={inProgress}>

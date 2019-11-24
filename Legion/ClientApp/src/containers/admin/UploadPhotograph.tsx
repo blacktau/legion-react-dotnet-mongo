@@ -43,7 +43,7 @@ const PhotographUpload = () => {
       {preUpload && (
         <DropTarget
           accept='image/jpeg'
-          onDrop={(accepted, rejected) => {
+          onDrop={(accepted, _) => {
             if (!accepted || accepted.length === 0) {
               return
             }

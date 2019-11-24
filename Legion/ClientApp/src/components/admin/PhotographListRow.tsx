@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
-import { Button, Intent, Icon, ButtonGroup, Checkbox } from '@blueprintjs/core'
+import { Intent, ButtonGroup, Checkbox } from '@blueprintjs/core'
 import { Photograph } from '../../types/Photograph'
 import moment from 'moment'
+import { useInView } from 'react-intersection-observer'
+import { PhotographActionButton } from './PhotographActionButton'
+import { publishPhotograph } from '../../webapi/photographs/publishPhotograph-client'
+import { managePhotographsActions } from '../../actions/managePhotographActions'
+import { retractPhotograph } from '../../webapi/photographs/retractPhotograph-client'
 
 type PhotographListRowProps = {
   value: Photograph
@@ -9,13 +14,6 @@ type PhotographListRowProps = {
 
 const PhotographListRow = ({ value }: PhotographListRowProps) => {
   const [selected, setSelected] = useState(false)
-
-  // handlePublishClicked = () => {
-  //   const { onPublish, value } = this.props
-  //   if (onPublish) {
-  //     onPublish(value)
-  //   }
-  // }
 
   // handleSuppressClicked = () => {
   //   const { onSuppress, value } = this.props
@@ -34,33 +32,34 @@ const PhotographListRow = ({ value }: PhotographListRowProps) => {
   //   }
   // }
 
+  const [ref, inView, entry] = useInView({
+    threshold: 0,
+    rootMargin: '0px 0px 50px 0px',
+    triggerOnce: true
+  })
+
   return (
     <tr key={value.id}>
       <td>
         <Checkbox onChange={() => setSelected(!selected)} checked={selected} />
       </td>
       <td>
-        <img src={'/images/' + value.id + '.jpg?height=50'} alt={value.description} />
+        <img src={inView ? `/images/${value.id}.jpg?height=50` : ''} alt={value.description} className={'photographRowImage'} ref={ref} />
       </td>
       <td>{value.title}</td>
       <td>{value.uploadedDate ? moment(value.uploadedDate).format('DD/MM/YY hh:mm') : '-'}</td>
       <td>{value.publishedDate ? moment(value.publishedDate).format('DD/MM/YY hh:mm') : '-'}</td>
       <td className='actionButtons'>
         <ButtonGroup>
-          <Button intent={Intent.PRIMARY}>
-            <Icon icon='edit' />
-          </Button>
-          <Button intent={Intent.WARNING}>
-            <Icon icon='delete' />
-          </Button>
+          {/*
+          <PhotographActionButton intent={Intent.PRIMARY} icon='edit'  />
+          <PhotographActionButton intent={Intent.WARNING} icon='delete' />
+          
+*/}
           {!value.isPublished ? (
-            <Button intent={Intent.SUCCESS}>
-              <Icon icon='eye-on' />
-            </Button>
+            <PhotographActionButton intent={Intent.SUCCESS} icon='eye-on' apiClient={publishPhotograph} photograph={value} actionFactory={managePhotographsActions.published} />
           ) : (
-            <Button intent={Intent.WARNING}>
-              <Icon icon='eye-off' />
-            </Button>
+            <PhotographActionButton intent={Intent.WARNING} icon='eye-off' apiClient={retractPhotograph} photograph={value} actionFactory={managePhotographsActions.retracted} />
           )}
         </ButtonGroup>
       </td>

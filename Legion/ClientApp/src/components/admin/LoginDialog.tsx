@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Button, Classes, Dialog, Intent, Toaster, Toast } from '@blueprintjs/core'
 import { authoriseActions } from '../../actions/authoriseActions'
 import RequiredInputGroup from './RequiredInputGroup'
@@ -13,35 +13,24 @@ const LoginDialog = () => {
   const [password, setPassword] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [triggerRequest, setTriggerRequest] = useState(false)
   const [error, setError] = useState<RequestError | undefined>(undefined)
   const [inProgress, setInProgress] = useState(false)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (!triggerRequest) {
-      return
-    }
-
+  const submitLogin = useCallback(async () => {
     setSubmitted(true)
     if (username && password) {
       setInProgress(true)
-      authenticateUser(username, password)
-        .then((user: User) => {
-          dispatch(authoriseActions.success(user))
-          setInProgress(false)
-        })
-        .catch((error: RequestError) => {
-          setError(error)
-          setInProgress(false)
-        })
-        .finally(() => {
-          setTriggerRequest(false)
-        })
-    } else {
-      setTriggerRequest(false)
+      try {
+        const user: User = await authenticateUser(username, password)
+        dispatch(authoriseActions.success(user))
+        setInProgress(false)
+      } catch (error) {
+        setError(error)
+        setInProgress(false)
+      }
     }
-  }, [triggerRequest, dispatch, password, username])
+  }, [password, username, dispatch])
 
   return (
     <>
@@ -80,7 +69,7 @@ const LoginDialog = () => {
             rightElement={<LockButton setShowPassword={setShowPassword} showPassword={showPassword} />}
             onKeyPress={event => {
               if (event.key === 'Enter') {
-                setTriggerRequest(true)
+                submitLogin()
                 event.preventDefault()
               }
             }}
@@ -92,12 +81,11 @@ const LoginDialog = () => {
             <Button
               intent={Intent.PRIMARY}
               onClick={() => {
-                setTriggerRequest(true)
+                submitLogin()
               }}
               disabled={inProgress}
               icon='log-in'
-              loading={inProgress}
-            >
+              loading={inProgress}>
               Login
             </Button>
           </div>

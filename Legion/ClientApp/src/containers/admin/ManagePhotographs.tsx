@@ -1,26 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Card, Classes, Spinner } from '@blueprintjs/core'
 import PhotographList from '../../components/admin/PhotographList'
 import { getAllPhotographs } from '../../webapi/photographs'
-import { Photograph } from '../../types/Photograph'
+import { useDispatch, useSelector } from 'react-redux'
+import { getPhotographsToManage } from '../../selectors'
+import { managePhotographsActions } from '../../actions/managePhotographActions'
 
 const ManagePhotographs = () => {
   const [inProgress, setInProgress] = useState(false)
-  const [photographs, setPhotographs] = useState<Array<Photograph> | undefined>(undefined)
+  const photographs = useSelector(getPhotographsToManage)
+  const dispatch = useDispatch()
 
-  useEffect(() => {
+  const loadAllPhotographs = useCallback(async () => {
     if (inProgress) {
       return
     }
-
     setInProgress(true)
-    getAllPhotographs()
-      .then(result => {
-        setPhotographs(result)
-      })
-      .finally(() => {
-        setInProgress(false)
-      })
+
+    const allPhotographs = await getAllPhotographs()
+    dispatch(managePhotographsActions.initialise(allPhotographs))
+
+    setInProgress(false)
+  }, [dispatch, inProgress])
+
+  useEffect(() => {
+    loadAllPhotographs()
   }, [])
 
   return (

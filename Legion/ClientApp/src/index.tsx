@@ -17,6 +17,14 @@ const history = createBrowserHistory({ basename: baseUrl })
 
 const middleware = [routerMiddleware(history)]
 
+const loadPolyfills = async () => {
+  if (typeof window.IntersectionObserver === 'undefined') {
+    await import('intersection-observer')
+  }
+}
+
+loadPolyfills()
+
 // Get the application-wide store instance, pre-populating with state from the server where available.
 declare global {
   interface Window {

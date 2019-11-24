@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useLayoutEffect, useState} from 'react'
 import PhotographListRow from './PhotographListRow'
 import { HTMLTable } from '@blueprintjs/core'
 import { Photograph } from '../../types/Photograph'
@@ -10,9 +10,6 @@ type PhotographListProps = {
 }
 
 const PhotographList = ({ photographs }: PhotographListProps) => {
-  // const [selected, setSelected] = useState(new Array<string>())
-
-  //  const { selected, order, orderBy, columns } = this.state
 
   if (!photographs || photographs.length === 0) {
     return <div>No Photographs!</div>

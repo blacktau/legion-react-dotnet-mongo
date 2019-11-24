@@ -40,36 +40,32 @@ namespace Legion.Repositories
             await this.photographCollection.InsertOneAsync(photograph);
         }
 
-        public async Task<List<Photograph>> GetAllAsync()
-        {
-            return await this.photographCollection.AsQueryable().OrderBy(_ => _.UploadedDate).ToListAsync();
-        }
+        public async Task<List<Photograph>> GetAllAsync() => await this.photographCollection.AsQueryable().OrderBy(_ => _.UploadedDate).ToListAsync();
 
-        public async Task<List<Photograph>> GetPublishedAsync()
+        public async Task<List<Photograph>> GetPublishedAsync() => await this.photographCollection.AsQueryable().Where(p => p.IsPublished).OrderBy(_ => _.PublishedDate).ToListAsync();
+
+        public async Task UpdatePhotographAsync(Photograph photograph)
         {
-            return await this.photographCollection.AsQueryable().Where(p => p.IsPublished == true).OrderBy(_ => _.PublishedDate).ToListAsync();
+            var photographExists = await this.IsExistingPhotographAsync(photograph);
+            if (!photographExists)
+            {
+                throw new FileNotFoundException();
+            }
+
+            await this.photographCollection.FindOneAndReplaceAsync(p => p.Id == photograph.Id, photograph);
         }
 
         public async Task<Stream> ReadImageAsStreamAsync(string fileId)
         {
-            var id = ObjectId.Parse(fileId);
+            ObjectId id = ObjectId.Parse(fileId);
             return await this.photographsBucket.OpenDownloadStreamAsync(id);
         }
 
-        public async Task<Photograph> GetPhotographByIdAsync(string id)
-        {
-            return await this.photographCollection.AsQueryable().FirstOrDefaultAsync(p => p.Id == id);
-        }
+        public async Task<Photograph> GetPhotographByIdAsync(string id) => await this.photographCollection.AsQueryable().FirstOrDefaultAsync(p => p.Id == id);
 
-        public async Task<bool> IsExistingPhotographAsync(Photograph photograph)
-        {
-            return await this.IsExistingPhotographAsync(photograph.Id);
-        }
+        public async Task<bool> IsExistingPhotographAsync(Photograph photograph) => await this.IsExistingPhotographAsync(photograph.Id);
 
-        public async Task<bool> IsExistingPhotographAsync(string photographId)
-        {
-            return await this.photographCollection.AsQueryable().AnyAsync(p => p.Id == photographId);
-        }
+        public async Task<bool> IsExistingPhotographAsync(string photographId) => await this.photographCollection.AsQueryable().AnyAsync(p => p.Id == photographId);
 
         public async Task<string> SaveImageAsync(string fileName, Photograph photograph, string contentType)
         {
@@ -89,7 +85,7 @@ namespace Legion.Repositories
                     }),
                 };
 
-                var id = await this.photographsBucket.UploadFromStreamAsync(fileName, stream, uploadOptions);
+                ObjectId id = await this.photographsBucket.UploadFromStreamAsync(fileName, stream, uploadOptions);
                 return id.ToString();
             }
         }

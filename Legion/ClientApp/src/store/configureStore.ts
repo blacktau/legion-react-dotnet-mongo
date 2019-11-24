@@ -5,6 +5,7 @@ import { applyMiddleware, combineReducers, compose, createStore, Middleware, Sto
 import { routerReducer } from 'react-router-redux'
 import * as Authentication from './AuthenticationStore'
 import * as UploadPhotograph from './UploadPhotographStore'
+import * as ManagePhotographs from './ManagePhotographsStore'
 
 export default function configureStore(initialState: object, middleware: Middleware[]): Store {
   // In development, use the browser's Redux dev tools extension if installed
@@ -17,15 +18,9 @@ export default function configureStore(initialState: object, middleware: Middlew
   const rootReducer = combineReducers({
     authentication: Authentication.authenticationReducer,
     routing: routerReducer,
-    uploadPhotograph: UploadPhotograph.reducer
+    uploadPhotograph: UploadPhotograph.reducer,
+    managePhotographs: ManagePhotographs.reducer
   })
 
-  return createStore(
-    rootReducer,
-    initialState,
-    compose(
-      applyMiddleware(...middleware),
-      ...enhancers
-    )
-  )
+  return createStore(rootReducer, initialState, compose(applyMiddleware(...middleware), ...enhancers))
 }
