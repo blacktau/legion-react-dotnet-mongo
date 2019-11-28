@@ -1,4 +1,4 @@
-namespace Legion.Models
+namespace Legion.Models.Data
 {
     using MongoDB.Bson.Serialization.Attributes;
 

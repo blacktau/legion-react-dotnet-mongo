@@ -1,9 +1,9 @@
-using System.IO;
-
 namespace Legion.Services
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+
     using Legion.Extensions;
     using Legion.Models;
 
@@ -12,6 +12,8 @@ namespace Legion.Services
     using MetadataExtractor.Formats.Iptc;
     using MetadataExtractor.Formats.Jpeg;
     using MetadataExtractor.Util;
+
+    using Directory = MetadataExtractor.Directory;
 
     public class ImageMetadataExtractor : IImageMetadataExtractor
     {
@@ -51,7 +53,8 @@ namespace Legion.Services
 
         private static void SetExifSubIFDProperties(IEnumerable<Directory> directories, ImageMetadata metaData)
         {
-            var directory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+            ExifSubIfdDirectory directory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+
             if (directory == null)
             {
                 return;
@@ -67,7 +70,8 @@ namespace Legion.Services
 
         private static void SetIPTCProperties(IEnumerable<Directory> directories, ImageMetadata metaData)
         {
-            var directory = directories.OfType<IptcDirectory>().FirstOrDefault();
+            IptcDirectory directory = directories.OfType<IptcDirectory>().FirstOrDefault();
+
             if (directory == null)
             {
                 return;
@@ -80,7 +84,8 @@ namespace Legion.Services
 
         private static void SetJpegProperties(IEnumerable<Directory> directories, ImageMetadata metaData)
         {
-            var directory = directories.OfType<JpegDirectory>().FirstOrDefault();
+            JpegDirectory directory = directories.OfType<JpegDirectory>().FirstOrDefault();
+
             if (directory == null)
             {
                 return;

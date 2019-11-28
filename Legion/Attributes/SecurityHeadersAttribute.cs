@@ -7,7 +7,8 @@ namespace Legion.Attributes
     {
         public override void OnResultExecuting(ResultExecutingContext context)
         {
-            var result = context.Result;
+            IActionResult result = context.Result;
+
             if (!(result is ViewResult))
             {
                 return;

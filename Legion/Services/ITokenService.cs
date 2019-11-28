@@ -1,6 +1,6 @@
 namespace Legion.Services
 {
-    using Legion.Models;
+    using Legion.Models.Data;
 
     public interface ITokenService
     {

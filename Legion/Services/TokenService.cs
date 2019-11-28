@@ -3,8 +3,10 @@ namespace Legion.Services
     using System;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
+
     using Legion.Configuration;
-    using Legion.Models;
+    using Legion.Models.Data;
+
     using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
 
@@ -21,23 +23,22 @@ namespace Legion.Services
         public string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = this.CreateTokenDescriptor(user);
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            SecurityTokenDescriptor tokenDescriptor = this.CreateTokenDescriptor(user);
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+
             return tokenHandler.WriteToken(token);
         }
 
         private SecurityTokenDescriptor CreateTokenDescriptor(User user)
-        {
-            return new SecurityTokenDescriptor
+            => new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                Subject = new ClaimsIdentity(
+                    new[]
                     {
-                        new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.Sid, user.Id),
+                        new Claim(ClaimTypes.Name, user.Username), new Claim(ClaimTypes.Sid, user.Id),
                     }),
                 Expires = DateTime.UtcNow.AddDays(this.authenticationOptions.ClaimExpiryDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(this.authenticationOptions.TokenSecretBytes), SecurityAlgorithms.HmacSha256Signature),
             };
-        }
     }
 }

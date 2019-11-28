@@ -13,4 +13,7 @@ export interface Photograph {
   isPublished: boolean
   publishedDate: Date | undefined
   uploadedDate: Date | undefined
+  width: number
+  height: number
+  ratio: number
 }

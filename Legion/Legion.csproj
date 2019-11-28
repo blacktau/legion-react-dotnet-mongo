@@ -38,9 +38,10 @@
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <None Include="ClientApp\.prettierrc.js" />
-    <None Include="ClientApp\src\actions\publishPhotographAction.ts" />
     <None Include="ClientApp\src\components\admin\AuthenticatedRoute.tsx" />
     <None Include="ClientApp\src\components\admin\PhotographActionButton.tsx" />
+    <None Include="ClientApp\src\components\Masonry.tsx" />
+    <None Include="ClientApp\src\containers\admin\EditPhotograph.tsx" />
     <None Include="ClientApp\src\intersection-observer.d.ts" />
     <None Include="ClientApp\src\store\ManagePhotographsStore.ts" />
     <None Include="ClientApp\src\webapi\photographs\publishPhotograph-client.ts" />

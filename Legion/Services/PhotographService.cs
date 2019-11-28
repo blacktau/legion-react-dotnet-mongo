@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace Legion.Services
 {
     using System;
@@ -8,6 +6,7 @@ namespace Legion.Services
     using System.Threading.Tasks;
 
     using Legion.Models;
+    using Legion.Models.Data;
     using Legion.Repositories;
 
     public class PhotographService : IPhotographService
@@ -18,7 +17,9 @@ namespace Legion.Services
 
         private readonly IImageMetadataExtractor imageMetadataExtractor;
 
-        public PhotographService(IPhotographRepository photographRepository, IImageMetadataExtractor imageMetadataExtractor)
+        public PhotographService(
+            IPhotographRepository photographRepository,
+            IImageMetadataExtractor imageMetadataExtractor)
         {
             this.photographRepository = photographRepository;
             this.imageMetadataExtractor = imageMetadataExtractor;
@@ -50,9 +51,13 @@ namespace Legion.Services
                 FNumber = metaData.FNumber,
                 IsoSpeed = metaData.IsoSpeed,
                 UploadedDate = DateTime.Now,
+                Width = metaData.Width,
+                Height = metaData.Height,
+                Ratio = metaData.Width / (decimal)metaData.Height,
             };
 
-            photograph.FileId = await this.photographRepository.SaveImageAsync(filePath, photograph, metaData.ContentType);
+            photograph.FileId =
+                await this.photographRepository.SaveImageAsync(filePath, photograph, metaData.ContentType);
 
             await this.photographRepository.AddPhotographAsync(photograph);
         }
@@ -64,6 +69,7 @@ namespace Legion.Services
         public async Task<Photograph> PublishPhotograph(string id)
         {
             Photograph photograph = await this.photographRepository.GetPhotographByIdAsync(id);
+
             if (photograph == null)
             {
                 return null;
@@ -72,12 +78,14 @@ namespace Legion.Services
             photograph.IsPublished = true;
             photograph.PublishedDate = DateTime.Now;
             await this.photographRepository.UpdatePhotographAsync(photograph);
+
             return photograph;
         }
 
         public async Task<Photograph> RetractPhotograph(string id)
         {
             Photograph photograph = await this.photographRepository.GetPhotographByIdAsync(id);
+
             if (photograph == null)
             {
                 return null;
@@ -86,25 +94,31 @@ namespace Legion.Services
             photograph.IsPublished = false;
             photograph.PublishedDate = null;
             await this.photographRepository.UpdatePhotographAsync(photograph);
+
             return photograph;
         }
 
         public async Task<Photograph> GetPhotographByIdAsync(string id) => await this.photographRepository.GetPhotographByIdAsync(id);
 
-        public Task UpdatePhotograph(string id, Photograph photograph) => throw new System.NotImplementedException();
+        public Task UpdatePhotograph(string id, Photograph photograph) => throw new NotImplementedException();
 
-        private static List<string> ParseKeywords(string keywordList) => string.IsNullOrWhiteSpace(keywordList) ? null : new List<string>(keywordList.ToLower().Split(';'));
+        private static List<string> ParseKeywords(string keywordList)
+            => string.IsNullOrWhiteSpace(keywordList)
+                ? null
+                : new List<string>(keywordList.ToLower().Split(';'));
 
         private async Task<string> CreatePhotographId(string title, int next = 1)
         {
             var idTitle = title.ToLowerInvariant();
             var id = this.idRegex.Replace(idTitle, "-");
+
             if (!(await this.photographRepository.IsExistingPhotographAsync(id)))
             {
                 return id;
             }
 
             var nextTitle = $"{title} {next}";
+
             return await this.CreatePhotographId(nextTitle, ++next);
         }
     }

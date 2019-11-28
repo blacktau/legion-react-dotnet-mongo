@@ -1,5 +1,5 @@
 import { Photograph } from '../types/Photograph'
-import { Action } from 'redux'
+import { AnyAction} from 'redux'
 import { INITIALISE, PUBLISH, RETRACTED } from '../actions/actionConstants'
 import { MANAGE_PHOTOGRAPHS } from '../actions/managePhotographActions'
 
@@ -19,7 +19,7 @@ export type SinglePhotographAction = {
   photograph: Photograph
 }
 
-export const reducer = (state: ManagePhotographState = initialState, action: (InitialiseManagePhotographsAction | SinglePhotographAction) & Action<string>): ManagePhotographState => {
+export const reducer = (state: ManagePhotographState = initialState, action: (InitialiseManagePhotographsAction | SinglePhotographAction) & AnyAction): ManagePhotographState => {
   const { type } = action
   switch (type) {
     case MANAGE_PHOTOGRAPHS[INITIALISE]:

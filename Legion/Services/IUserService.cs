@@ -3,6 +3,7 @@ namespace Legion.Services
     using System.Threading.Tasks;
 
     using Legion.Models;
+    using Legion.Models.Data;
 
     public interface IUserService
     {

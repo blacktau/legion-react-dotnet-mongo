@@ -91,7 +91,7 @@ namespace Legion
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => 
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",

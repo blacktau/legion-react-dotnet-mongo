@@ -6,7 +6,7 @@ namespace Legion.Repositories
     using System.Threading.Tasks;
 
     using Legion.Configuration;
-    using Legion.Models;
+    using Legion.Models.Data;
 
     using MongoDB.Bson;
     using MongoDB.Driver;
@@ -22,16 +22,19 @@ namespace Legion.Repositories
         public PhotographRepository(IMongoDatabase mongoDatabase)
         {
             this.photographCollection = mongoDatabase.GetCollection<Photograph>(Constants.PhotographCollection);
-            this.photographsBucket = new GridFSBucket(mongoDatabase, new GridFSBucketOptions
-            {
-                BucketName = Constants.PhotographBucketName,
-                ChunkSizeBytes = 262144, // 256kb
-            });
+
+            this.photographsBucket = new GridFSBucket(
+                mongoDatabase,
+                new GridFSBucketOptions
+                {
+                    BucketName = Constants.PhotographBucketName, ChunkSizeBytes = 262144, // 256kb
+                });
         }
 
         public async Task AddPhotographAsync(Photograph photograph)
         {
             var photographExists = await this.IsExistingPhotographAsync(photograph);
+
             if (photographExists)
             {
                 throw new Exception("Photograph already exists");
@@ -47,6 +50,7 @@ namespace Legion.Repositories
         public async Task UpdatePhotographAsync(Photograph photograph)
         {
             var photographExists = await this.IsExistingPhotographAsync(photograph);
+
             if (!photographExists)
             {
                 throw new FileNotFoundException();
@@ -58,6 +62,7 @@ namespace Legion.Repositories
         public async Task<Stream> ReadImageAsStreamAsync(string fileId)
         {
             ObjectId id = ObjectId.Parse(fileId);
+
             return await this.photographsBucket.OpenDownloadStreamAsync(id);
         }
 
@@ -78,14 +83,20 @@ namespace Legion.Repositories
             {
                 var uploadOptions = new GridFSUploadOptions
                 {
-                    Metadata = new BsonDocument(new Dictionary<string, object>
-                    {
-                        { "PhotographId", photograph.Id },
-                        { "ContentType", contentType },
-                    }),
+                    Metadata = new BsonDocument(
+                        new Dictionary<string, object>
+                        {
+                            {
+                                "PhotographId", photograph.Id
+                            },
+                            {
+                                "ContentType", contentType
+                            },
+                        }),
                 };
 
                 ObjectId id = await this.photographsBucket.UploadFromStreamAsync(fileName, stream, uploadOptions);
+
                 return id.ToString();
             }
         }

@@ -1,4 +1,4 @@
-namespace Legion.Models
+namespace Legion.Models.Data
 {
     using System;
     using System.Collections.Generic;
@@ -32,5 +32,11 @@ namespace Legion.Models
         public DateTime? PublishedDate { get; set; }
 
         public DateTime? UploadedDate { get; set; }
+
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
+        public decimal Ratio { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Intent, ButtonGroup, Checkbox } from '@blueprintjs/core'
+import { Intent, ButtonGroup, Checkbox, Button, Icon } from '@blueprintjs/core'
 import { Photograph } from '../../types/Photograph'
 import moment from 'moment'
 import { useInView } from 'react-intersection-observer'
@@ -51,11 +51,9 @@ const PhotographListRow = ({ value }: PhotographListRowProps) => {
       <td>{value.publishedDate ? moment(value.publishedDate).format('DD/MM/YY hh:mm') : '-'}</td>
       <td className='actionButtons'>
         <ButtonGroup>
-          {/*
-          <PhotographActionButton intent={Intent.PRIMARY} icon='edit'  />
-          <PhotographActionButton intent={Intent.WARNING} icon='delete' />
-          
-*/}
+          <Button intent={Intent.PRIMARY}>
+            <Icon icon='edit' />
+          </Button>
           {!value.isPublished ? (
             <PhotographActionButton intent={Intent.SUCCESS} icon='eye-on' apiClient={publishPhotograph} photograph={value} actionFactory={managePhotographsActions.published} />
           ) : (

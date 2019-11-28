@@ -6,6 +6,7 @@ namespace Legion.Services
     using System.Threading.Tasks;
 
     using Legion.Models;
+    using Legion.Models.Data;
     using Legion.Repositories;
 
     using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -14,10 +15,7 @@ namespace Legion.Services
     {
         private readonly IUserRepository userRepository;
 
-        public UserService(IUserRepository userRepository)
-        {
-            this.userRepository = userRepository;
-        }
+        public UserService(IUserRepository userRepository) => this.userRepository = userRepository;
 
         public async Task UpdateUserPassword(User user, string newPassword)
         {
@@ -27,45 +25,36 @@ namespace Legion.Services
 
         public async Task<User> GetAuthenticatedUserAsync(string username, string password)
         {
-            var user = await this.userRepository.GetUserByUsername(username);
+            User user = await this.userRepository.GetUserByUsername(username);
 
             if (user == null)
             {
                 return null;
             }
 
-            var hashedPassword = this.HashPassword(password, user.PasswordSalt);
+            byte[] hashedPassword = this.HashPassword(password, user.PasswordSalt);
 
-            if (!user.PasswordHash.SequenceEqual(hashedPassword))
-            {
-                return null;
-            }
-
-            return user;
+            return !user.PasswordHash.SequenceEqual(hashedPassword) ? null : user;
         }
 
         public Task<PasswordValidationResult> ValidateNewPassword(User user, string newPassword)
         {
-            var newHashedPassword = this.HashPassword(newPassword, user.PasswordSalt);
-            if (user.PasswordHash.SequenceEqual(newHashedPassword))
-            {
-                return Task.FromResult(PasswordValidationResult.NewPasswordMatch);
-            }
+            byte[] newHashedPassword = this.HashPassword(newPassword, user.PasswordSalt);
 
-            return Task.FromResult(PasswordValidationResult.Valid);
+            PasswordValidationResult result = user.PasswordHash.SequenceEqual(newHashedPassword)
+                ? PasswordValidationResult.NewPasswordMatch
+                : PasswordValidationResult.Valid;
+
+            return Task.FromResult(result);
         }
 
-        public Task<bool> IsExistingUser(string username)
-        {
-            return this.userRepository.IsExistingUser(username);
-        }
+        public Task<bool> IsExistingUser(string username) => this.userRepository.IsExistingUser(username);
 
         public async Task CreateUser(string username, string password)
         {
             var user = new User
             {
-                Id = Guid.NewGuid().ToString(),
-                Username = username,
+                Id = Guid.NewGuid().ToString(), Username = username,
             };
 
             this.SetUserPassword(user, password);
@@ -82,19 +71,18 @@ namespace Legion.Services
         }
 
         private byte[] HashPassword(string password, byte[] salt)
-        {
-            return KeyDerivation.Pbkdf2(
+            => KeyDerivation.Pbkdf2(
                 password: password,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA512,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8);
-        }
 
         private byte[] GenerateSalt()
         {
-            byte[] salt = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
+            var salt = new byte[128 / 8];
+
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
             }

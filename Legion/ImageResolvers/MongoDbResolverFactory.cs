@@ -1,6 +1,6 @@
 namespace Legion.ImageResolvers
 {
-    using Legion.Models;
+    using Legion.Models.Data;
     using Legion.Repositories;
 
     using Microsoft.Extensions.Logging;
@@ -17,9 +17,6 @@ namespace Legion.ImageResolvers
             this.loggerFactory = loggerFactory;
         }
 
-        public MongoDbResolver CreateResolver(Photograph photograph)
-        {
-            return new MongoDbResolver(this.loggerFactory.CreateLogger<MongoDbResolver>(), this.photographRepository, photograph);
-        }
+        public MongoDbResolver CreateResolver(Photograph photograph) => new MongoDbResolver(this.loggerFactory.CreateLogger<MongoDbResolver>(), this.photographRepository, photograph);
     }
 }

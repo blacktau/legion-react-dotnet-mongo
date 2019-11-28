@@ -4,7 +4,7 @@ namespace Legion.Controllers
     using System.IO;
     using System.Threading.Tasks;
 
-    using Legion.Models;
+    using Legion.Models.Data;
     using Legion.Services;
 
     using Microsoft.AspNetCore.Authorization;
@@ -33,6 +33,7 @@ namespace Legion.Controllers
         {
             List<Photograph> photographs = await this.photographService.GetAll();
             this.logger.LogInformation($"GetAll: returning {photographs.Count}");
+
             return this.Ok(photographs);
         }
 
@@ -41,7 +42,10 @@ namespace Legion.Controllers
         public async Task<ActionResult<List<Photograph>>> GetPublished()
         {
             List<Photograph> photographs = await this.photographService.GetPublished();
+
+            photographs.Sort((a, b) => a.PublishedDate.HasValue && b.PublishedDate.HasValue ? a.PublishedDate.Value.CompareTo(b.PublishedDate.Value) : 0);
             this.logger.LogInformation($"GetPublished: returning {photographs.Count}");
+
             return this.Ok(photographs);
         }
 
@@ -50,6 +54,7 @@ namespace Legion.Controllers
         public async Task<ActionResult<Photograph>> GetById(string id)
         {
             Photograph photograph = await this.photographService.GetPhotographByIdAsync(id);
+
             if (photograph == null)
             {
                 return this.NotFound();
@@ -62,6 +67,7 @@ namespace Legion.Controllers
         public async Task<ActionResult<Photograph>> Publish(string id)
         {
             Photograph photograph = await this.photographService.PublishPhotograph(id);
+
             if (photograph == null)
             {
                 return this.NotFound();
@@ -74,6 +80,7 @@ namespace Legion.Controllers
         public async Task<ActionResult<Photograph>> Retract(string id)
         {
             Photograph photograph = await this.photographService.RetractPhotograph(id);
+
             if (photograph == null)
             {
                 return this.NotFound();
@@ -86,6 +93,7 @@ namespace Legion.Controllers
         public async Task<ActionResult> UpdateOrCreate(string id, [FromBody] Photograph photograph)
         {
             await this.photographService.UpdatePhotograph(id, photograph);
+
             return this.Ok();
         }
 
@@ -108,7 +116,11 @@ namespace Legion.Controllers
 
             await this.photographService.AddPhotographAsync(filePath, file.FileName);
 
-            return this.Ok(new { count = 1, size, filePath });
+            return this.Ok(
+                new
+                {
+                    count = 1, size, filePath,
+                });
         }
     }
 }

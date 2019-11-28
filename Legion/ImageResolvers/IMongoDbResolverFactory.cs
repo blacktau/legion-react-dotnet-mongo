@@ -1,6 +1,6 @@
 namespace Legion.ImageResolvers
 {
-    using Legion.Models;
+    using Legion.Models.Data;
 
     public interface IMongoDbResolverFactory
     {

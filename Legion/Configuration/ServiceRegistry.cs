@@ -3,6 +3,7 @@ namespace Legion.Configuration
     using Legion.ImageResolvers;
     using Legion.Repositories;
     using Legion.Services;
+
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +18,8 @@ namespace Legion.Configuration
 
     internal static class ServiceRegistry
     {
-        public static IServiceCollection AddLegionServices(this IServiceCollection services) =>
-            services
+        public static IServiceCollection AddLegionServices(this IServiceCollection services)
+            => services
                 .AddSingleton<IUserRepository, UserRepository>()
                 .AddSingleton<IPhotographRepository, PhotographRepository>()
                 .AddSingleton<IUserService, UserService>()
@@ -43,14 +44,14 @@ namespace Legion.Configuration
                 .SetMemoryAllocatorFromMiddlewareOptions()
                 .SetCache(
                     provider => new PhysicalFileSystemCache(
-                                    provider.GetRequiredService<IHostingEnvironment>(),
-                                    provider.GetRequiredService<MemoryAllocator>(),
-                                    provider.GetRequiredService<IOptions<ImageSharpMiddlewareOptions>>())
+                        provider.GetRequiredService<IHostingEnvironment>(),
+                        provider.GetRequiredService<MemoryAllocator>(),
+                        provider.GetRequiredService<IOptions<ImageSharpMiddlewareOptions>>())
                     {
                         Settings =
-                                        {
-                                            [PhysicalFileSystemCache.Folder] = PhysicalFileSystemCache.DefaultCacheFolder,
-                                        },
+                        {
+                            [PhysicalFileSystemCache.Folder] = PhysicalFileSystemCache.DefaultCacheFolder,
+                        },
                     })
                 .SetCacheHash<CacheHash>()
                 .AddProvider<MongoDbImageProvider>()

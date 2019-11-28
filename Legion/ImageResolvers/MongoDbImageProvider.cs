@@ -5,6 +5,7 @@ namespace Legion.ImageResolvers
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Legion.Models.Data;
     using Legion.Repositories;
 
     using Microsoft.AspNetCore.Http;
@@ -43,7 +44,7 @@ namespace Legion.ImageResolvers
             var photoId = ExtractPhotographId(context.Request.Path);
             this.logger.LogInformation($"Resolving {photoId}");
 
-            var photograph = RunSync(async () => await this.photographRepository.GetPhotographByIdAsync(photoId));
+            Photograph photograph = RunSync(async () => await this.photographRepository.GetPhotographByIdAsync(photoId));
 
             this.logger.LogInformation($"Got Photograph for {photoId}");
 
@@ -55,21 +56,30 @@ namespace Legion.ImageResolvers
             var photoId = ExtractPhotographId(context.Request.Path);
             this.logger.LogInformation($"Resolving {photoId}");
 
-            var photograph = await this.photographRepository.GetPhotographByIdAsync(photoId);
+            Photograph photograph = await this.photographRepository.GetPhotographByIdAsync(photoId);
 
             this.logger.LogInformation($"Got Photograph for {photoId}");
 
             return this.mongoDbResolverFactory.CreateResolver(photograph);
         }
 
-        public bool IsValidRequest(HttpContext context)
+        public bool IsValidRequest(HttpContext context) => RunSync(async () => await this.IsValidRequestAsync(context));
+
+        private static string ExtractPhotographId(PathString path)
         {
-            return RunSync(async () => await this.IsValidRequestAsync(context));
+            var pathString = path.ToString();
+            var startIdx = pathString.LastIndexOf('/') + 1;
+            var length = pathString.LastIndexOf('.') - startIdx;
+
+            return pathString.Substring(startIdx, length).ToLower();
         }
 
-        public async Task<bool> IsValidRequestAsync(HttpContext context)
+        private static TResult RunSync<TResult>(Func<Task<TResult>> func) => TaskFactory.StartNew(func).Unwrap().GetAwaiter().GetResult();
+
+        private async Task<bool> IsValidRequestAsync(HttpContext context)
         {
-            var path = context.Request.Path;
+            PathString path = context.Request.Path;
+
             if (!path.HasValue || !path.StartsWithSegments("/images"))
             {
                 return false;
@@ -78,17 +88,8 @@ namespace Legion.ImageResolvers
             var photoId = ExtractPhotographId(path);
             var isValid = await this.photographRepository.IsExistingPhotographAsync(photoId);
             this.logger.LogInformation($"IsValidRequestAsync: {photoId}: {isValid}");
+
             return isValid;
         }
-
-        private static string ExtractPhotographId(PathString path)
-        {
-            var pathString = path.ToString();
-            var startIdx = pathString.LastIndexOf('/') + 1;
-            var length = pathString.LastIndexOf('.') - startIdx;
-            return pathString.Substring(startIdx, length).ToLower();
-        }
-
-        private static TResult RunSync<TResult>(Func<Task<TResult>> func) => TaskFactory.StartNew(func).Unwrap().GetAwaiter().GetResult();
     }
 }

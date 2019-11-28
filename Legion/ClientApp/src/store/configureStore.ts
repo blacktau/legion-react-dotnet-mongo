@@ -16,8 +16,8 @@ export default function configureStore(initialState: object, middleware: Middlew
   }
 
   const rootReducer = combineReducers({
-    authentication: Authentication.authenticationReducer,
     routing: routerReducer,
+    authentication: Authentication.authenticationReducer,
     uploadPhotograph: UploadPhotograph.reducer,
     managePhotographs: ManagePhotographs.reducer
   })

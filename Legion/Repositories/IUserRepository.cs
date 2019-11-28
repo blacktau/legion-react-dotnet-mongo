@@ -2,7 +2,7 @@ namespace Legion.Repositories
 {
     using System.Threading.Tasks;
 
-    using Legion.Models;
+    using Legion.Models.Data;
 
     public interface IUserRepository
     {

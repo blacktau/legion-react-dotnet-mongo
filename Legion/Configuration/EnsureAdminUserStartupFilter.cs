@@ -1,7 +1,9 @@
 namespace Legion.Configuration
 {
     using System;
+
     using Legion.Services;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.DependencyInjection;

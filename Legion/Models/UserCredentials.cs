@@ -1,4 +1,4 @@
-namespace Legion.Models.Account
+namespace Legion.Models
 {
     using System.ComponentModel.DataAnnotations;
 

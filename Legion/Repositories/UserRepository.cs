@@ -1,11 +1,10 @@
 namespace Legion.Repositories
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Legion.Configuration;
-    using Legion.Models;
+    using Legion.Models.Data;
 
     using MongoDB.Driver;
     using MongoDB.Driver.Linq;
@@ -42,18 +41,27 @@ namespace Legion.Repositories
             }
 
             user.Username = user.Username.ToLower();
-            await this.userCollection.ReplaceOneAsync(u => u.Username == user.Username, user, new UpdateOptions { IsUpsert = true });
+
+            await this.userCollection.ReplaceOneAsync(
+                u => u.Username == user.Username,
+                user,
+                new UpdateOptions
+                {
+                    IsUpsert = true,
+                });
         }
 
         public async Task<User> GetUserByUsername(string username)
         {
             var sanitisedUsername = username.ToLower();
+
             return await this.userCollection.AsQueryable().Where(u => u.Username == sanitisedUsername).FirstOrDefaultAsync();
         }
 
         public async Task<bool> IsExistingUser(string username)
         {
             var sanitisedUsername = username.ToLower();
+
             return await this.userCollection.AsQueryable().AnyAsync(u => u.Username == sanitisedUsername);
         }
 
