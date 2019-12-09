@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState} from 'react'
+import React from 'react'
 import PhotographListRow from './PhotographListRow'
 import { HTMLTable } from '@blueprintjs/core'
 import { Photograph } from '../../types/Photograph'
@@ -10,7 +10,6 @@ type PhotographListProps = {
 }
 
 const PhotographList = ({ photographs }: PhotographListProps) => {
-
   if (!photographs || photographs.length === 0) {
     return <div>No Photographs!</div>
   }

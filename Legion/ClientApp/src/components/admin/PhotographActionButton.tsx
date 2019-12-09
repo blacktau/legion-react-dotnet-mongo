@@ -1,4 +1,4 @@
-import { Button, IButtonProps, Icon, IconName, Intent, Toast, Toaster } from '@blueprintjs/core'
+import { Button, Icon, IconName, Intent, Toast, Toaster } from '@blueprintjs/core'
 import React, { useCallback, useState } from 'react'
 import { MaybeElement } from '@blueprintjs/core/src/common/props'
 import { Photograph } from '../../types/Photograph'

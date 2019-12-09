@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import 'typeface-poiret-one'
 import Header from '../components/Header'
@@ -11,19 +11,46 @@ const breakPoints = [350, 500, 750]
 
 const Home = () => {
   const [photographs, setPhotographs] = useState<Array<Photograph> | undefined>(undefined)
-
-  const refreshPhotographs = useCallback(async () => {
-    try {
-      const result = await getPublishedPhotographs()
-      setPhotographs(result)
-    } catch (error) {
-      console.error(`Unable to fetch photographs: ${error}`)
-    }
-  }, [])
+  const [keywords, setKeywords] = useState<Map<string, number>>(new Map<string, number>())
+  const [inProgress, setInProgress] = useState(false)
 
   useEffect(() => {
-    refreshPhotographs()
-  }, [refreshPhotographs])
+    if (inProgress || photographs) {
+      return
+    }
+
+    setInProgress(true)
+    getPublishedPhotographs()
+      .then(result => {
+        setPhotographs(result)
+        const newKeywords = new Map<string, number>()
+        result.forEach(p => {
+          if (!p.keywords) {
+            return
+          }
+
+          p.keywords.forEach(k => {
+            let v = newKeywords.has(k) ? newKeywords.get(k) : 0
+            if (!v) {
+              v = 0
+            }
+
+            newKeywords.set(k, v + 1)
+          })
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        const sorted = new Map<string, number>([...newKeywords.entries()].sort((a, b) => b[1] - a[1]))
+        setKeywords(sorted)
+        console.log(sorted)
+      })
+      .catch(error => {
+        console.error(`Unable to fetch photographs: ${error}`)
+      })
+      .finally(() => {
+        setInProgress(false)
+      })
+  }, [inProgress, photographs])
 
   return (
     <>
@@ -42,15 +69,5 @@ const Home = () => {
     </>
   )
 }
-
-/*
-        <Masonry breakpointCols={5} className='gallery' columnClassName='gallery-column'>
-          {photographs.map((value: Photograph) => (
-            <div key={value.id} className='photo'>
-              <img src={inView ? `/images/${value.id}.jpg?width=200` : ''} alt={value.description} ref={ref} className='wallPhoto' />
-            </div>
-          ))}
-        </Masonry>
-*/
 
 export default Home

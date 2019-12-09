@@ -44,6 +44,7 @@
     <None Include="ClientApp\src\containers\admin\EditPhotograph.tsx" />
     <None Include="ClientApp\src\intersection-observer.d.ts" />
     <None Include="ClientApp\src\store\ManagePhotographsStore.ts" />
+    <None Include="ClientApp\src\webapi\photographs\getPhotograph.ts" />
     <None Include="ClientApp\src\webapi\photographs\publishPhotograph-client.ts" />
     <None Include="ClientApp\src\webapi\photographs\retractPhotograph-client.ts" />
     <None Include="ClientApp\src\webapi\photographs\uploadPhotograph-client.ts" />

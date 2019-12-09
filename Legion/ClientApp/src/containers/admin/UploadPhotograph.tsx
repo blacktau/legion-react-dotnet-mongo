@@ -12,7 +12,6 @@ import { FileUpload } from '../../types/FileUpload'
 import { uploadFile } from '../../webapi/uploadFile'
 
 const PhotographUpload = () => {
-  const [showReset, setShowReset] = useState(false)
   const [showComplete, setShowComplete] = useState(false)
 
   const photographs = useSelector(getUploadingPhotographs)
@@ -66,7 +65,6 @@ const PhotographUpload = () => {
                 resetPhotographUpload()
                 goToAdmin()
               } else {
-                setShowReset(true)
                 setShowComplete(false)
               }
             }}

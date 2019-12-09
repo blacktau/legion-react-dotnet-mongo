@@ -1,4 +1,7 @@
-import { getAllPhotographs } from './getAllPhotographs-client'
-import { getPublishedPhotographs } from './getPublishedPhotographs-client'
+import { getAllPhotographs } from './getAllPhotographs'
+import { getPublishedPhotographs } from './getPublishedPhotographs'
+import { publishPhotograph } from './publishPhotograph'
+import { retractPhotograph } from './retractPhotograph'
+import { getPhotograph } from './getPhotograph'
 
-export { getAllPhotographs, getPublishedPhotographs }
+export { getAllPhotographs, getPublishedPhotographs, publishPhotograph, retractPhotograph, getPhotograph }

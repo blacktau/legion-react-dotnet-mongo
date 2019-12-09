@@ -8,10 +8,10 @@ services:
     ports:
       - "27017:27017"
     env_file:
-      - ../.env
+      - .env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=LegionRoot
-      - MONGO_INITDB_ROOT_PASSWORD=${LEGION_ROOT_DATABASE_PASSWORD}
+      - MONGO_INITDB_ROOT_PASSWORD=${LEGION_ROOT_DATABASE_PASSWORD:?root_database_password_required}
       - MONGO_INITDB_DATABASE=Legion
     volumes:
       - type: bind
@@ -30,6 +30,6 @@ services:
       - ../.env
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=LegionRoot
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=${LEGION_ROOT_DATABASE_PASSWORD}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${LEGION_ROOT_DATABASE_PASSWORD:?root_database_password_required}
       - ME_CONFIG_MONGODB_SERVER=legion-mongo
 

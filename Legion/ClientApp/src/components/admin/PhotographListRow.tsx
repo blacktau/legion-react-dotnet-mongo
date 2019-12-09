@@ -4,9 +4,9 @@ import { Photograph } from '../../types/Photograph'
 import moment from 'moment'
 import { useInView } from 'react-intersection-observer'
 import { PhotographActionButton } from './PhotographActionButton'
-import { publishPhotograph } from '../../webapi/photographs/publishPhotograph-client'
+import { publishPhotograph, retractPhotograph } from '../../webapi/photographs'
 import { managePhotographsActions } from '../../actions/managePhotographActions'
-import { retractPhotograph } from '../../webapi/photographs/retractPhotograph-client'
+import { Link } from 'react-router-dom'
 
 type PhotographListRowProps = {
   value: Photograph
@@ -14,25 +14,8 @@ type PhotographListRowProps = {
 
 const PhotographListRow = ({ value }: PhotographListRowProps) => {
   const [selected, setSelected] = useState(false)
-
-  // handleSuppressClicked = () => {
-  //   const { onSuppress, value } = this.props
-  //   if (onSuppress) {
-  //     onSuppress(value)
-  //   }
-  // }
-
-  // handleSelectionChanged = () => {
-  //   const { selected } = this.state
-  //   const { onSelected, value, onDeselected } = this.props
-  //   if (selected) {
-  //     onSelected(value)
-  //   } else {
-  //     onDeselected(value)
-  //   }
-  // }
-
-  const [ref, inView, entry] = useInView({
+ 
+  const [ref, inView ] = useInView({
     threshold: 0,
     rootMargin: '0px 0px 50px 0px',
     triggerOnce: true
@@ -51,9 +34,11 @@ const PhotographListRow = ({ value }: PhotographListRowProps) => {
       <td>{value.publishedDate ? moment(value.publishedDate).format('DD/MM/YY hh:mm') : '-'}</td>
       <td className='actionButtons'>
         <ButtonGroup>
-          <Button intent={Intent.PRIMARY}>
-            <Icon icon='edit' />
-          </Button>
+          <Link to={`/admin/photograph/${value.id}/edit`}>
+            <Button intent={Intent.PRIMARY}>
+              <Icon icon='edit' />
+            </Button>
+          </Link>
           {!value.isPublished ? (
             <PhotographActionButton intent={Intent.SUCCESS} icon='eye-on' apiClient={publishPhotograph} photograph={value} actionFactory={managePhotographsActions.published} />
           ) : (

@@ -23,7 +23,7 @@ namespace Legion.Models.Data
 
         public string IsoSpeed { get; set; }
 
-        public List<string> Keywords { get; set; }
+        public IList<string> Keywords { get; set; }
 
         public string FileId { get; set; }
 

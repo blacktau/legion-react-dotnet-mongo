@@ -1,6 +1,7 @@
 namespace Legion.Models
 {
     using System;
+    using System.Collections.Generic;
 
     public class ImageMetadata
     {
@@ -22,7 +23,7 @@ namespace Legion.Models
 
         public string ObjectName { get; set; }
 
-        public string Keywords { get; set; }
+        public IList<string> Keywords { get; set; }
 
         public string Caption { get; set; }
 

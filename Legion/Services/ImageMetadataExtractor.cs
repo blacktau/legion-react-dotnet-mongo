@@ -78,7 +78,7 @@ namespace Legion.Services
             }
 
             metaData.ObjectName = directory.GetString(IptcDirectory.TagObjectName);
-            metaData.Keywords = directory.GetString(IptcDirectory.TagKeywords);
+            metaData.Keywords = directory.GetKeywords();
             metaData.Caption = directory.GetString(IptcDirectory.TagCaption);
         }
 

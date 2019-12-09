@@ -23,7 +23,7 @@ const Masonry = ({ breakpoints, children }: MasonryProps) => {
         breakpoints.reduceRight((prev, curr, idx) => {
           return curr < width ? prev : idx
         }, breakpoints.length) + 1
-      if (newColumns != columns) {
+      if (newColumns !== columns) {
         setColumns(newColumns)
       }
     }

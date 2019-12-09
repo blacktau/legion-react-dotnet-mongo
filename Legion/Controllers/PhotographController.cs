@@ -43,7 +43,7 @@ namespace Legion.Controllers
         {
             List<Photograph> photographs = await this.photographService.GetPublished();
 
-            photographs.Sort((a, b) => a.PublishedDate.HasValue && b.PublishedDate.HasValue ? a.PublishedDate.Value.CompareTo(b.PublishedDate.Value) : 0);
+            photographs.Sort((a, b) => a.DateTimeDigitized.HasValue && b.DateTimeDigitized.HasValue ? a.DateTimeDigitized.Value.CompareTo(b.DateTimeDigitized.Value) : 0);
             this.logger.LogInformation($"GetPublished: returning {photographs.Count}");
 
             return this.Ok(photographs);

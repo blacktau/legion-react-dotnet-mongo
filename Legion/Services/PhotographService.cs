@@ -34,8 +34,6 @@ namespace Legion.Services
                 metaData.ObjectName = originalFileName;
             }
 
-            List<string> keywords = ParseKeywords(metaData.Keywords);
-
             var id = await this.CreatePhotographId(metaData.ObjectName);
 
             var photograph = new Photograph
@@ -45,7 +43,7 @@ namespace Legion.Services
                 Title = metaData.ObjectName,
                 DateTimeOriginal = metaData.DateTimeOriginal,
                 DateTimeDigitized = metaData.DateTimeDigitized,
-                Keywords = keywords,
+                Keywords = metaData.Keywords,
                 ExposureProgram = metaData.ExposureProgram,
                 ExposureTime = metaData.ExposureTime,
                 FNumber = metaData.FNumber,
@@ -56,8 +54,7 @@ namespace Legion.Services
                 Ratio = metaData.Width / (decimal)metaData.Height,
             };
 
-            photograph.FileId =
-                await this.photographRepository.SaveImageAsync(filePath, photograph, metaData.ContentType);
+            photograph.FileId = await this.photographRepository.SaveImageAsync(filePath, photograph, metaData.ContentType);
 
             await this.photographRepository.AddPhotographAsync(photograph);
         }

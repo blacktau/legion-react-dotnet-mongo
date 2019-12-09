@@ -20,7 +20,7 @@ const AdminRoot = () => (
       <Route path='/admin/login' component={Login} />
       <AuthenticatedRoute path='/admin/photographs/upload' component={UploadPhotograph} />
       <AuthenticatedRoute path='/admin/photographs/manage' component={ManagePhotographs} />
-      <AuthenticatedRoute path='/admin/photographs/edit' component={EditPhotograph} />
+      <AuthenticatedRoute path='/admin/photograph/:id/edit' component={EditPhotograph} />
       <AuthenticatedRoute path='/admin/change-password' component={ChangePassword} />
       <Route component={NoMatch} />
     </Switch>

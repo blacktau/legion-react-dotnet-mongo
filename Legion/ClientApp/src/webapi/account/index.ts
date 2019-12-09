@@ -1,4 +1,4 @@
-import { authenticateUser } from './authenticateUser-client'
-import { changePassword } from './changePassword-client'
+import { authenticateUser } from './authenticateUser'
+import { changePassword } from './changePassword'
 
 export { authenticateUser, changePassword }

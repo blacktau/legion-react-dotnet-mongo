@@ -37,7 +37,6 @@ export const authenticationReducer = (state: AuthenticationStoreState = authenti
         ...state,
         user: resultAction.user
       }
-      console.log(result)
       return result
     }
 

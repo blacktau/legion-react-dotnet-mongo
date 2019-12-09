@@ -54,7 +54,6 @@ const client = <T>(endPoint: string, { input, ...options }: ClientConfig = {}): 
         }
       })
       .then(response => {
-        console.log(`Response: ${JSON.stringify(response)}`)
         resolve(response)
       })
       .catch((error: any) => reject(error))

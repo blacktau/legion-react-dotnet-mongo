@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Classes, Spinner } from '@blueprintjs/core'
 import PhotographList from '../../components/admin/PhotographList'
 import { getAllPhotographs } from '../../webapi/photographs'
@@ -11,21 +11,20 @@ const ManagePhotographs = () => {
   const photographs = useSelector(getPhotographsToManage)
   const dispatch = useDispatch()
 
-  const loadAllPhotographs = useCallback(async () => {
-    if (inProgress) {
+  useEffect(() => {
+    if (inProgress || photographs) {
       return
     }
+
     setInProgress(true)
-
-    const allPhotographs = await getAllPhotographs()
-    dispatch(managePhotographsActions.initialise(allPhotographs))
-
-    setInProgress(false)
-  }, [dispatch, inProgress])
-
-  useEffect(() => {
-    loadAllPhotographs()
-  }, [])
+    getAllPhotographs()
+      .then(allPhotographs => {
+        dispatch(managePhotographsActions.initialise(allPhotographs))
+      })
+      .finally(() => {
+        setInProgress(false)
+      })
+  }, [dispatch, inProgress, photographs])
 
   return (
     <Card className={Classes.DARK + ' photographList'}>
