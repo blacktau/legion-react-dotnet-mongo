@@ -2,6 +2,7 @@
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
 @import "~@blueprintjs/core/lib/scss/variables";
+@import "~@blueprintjs/select/lib/css/blueprint-select.css";
 
 body {
     padding-top: 60px;
@@ -56,4 +57,19 @@ body {
 
 .editImage {
     margin: 20px auto;
+}
+
+.editKeyword {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.addKeyword {
+    margin-left: 5px;
+    margin-top: -1px;
+}
+
+.bp3-multi-select-popover .bp3-menu {
+    scrollbar-color: $pt-dark-code-background-color $pt-dark-app-background-color;
+    scrollbar-width: thin;
 }

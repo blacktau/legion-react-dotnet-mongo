@@ -3,9 +3,11 @@ namespace Legion.Repositories
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Legion.Configuration;
+    using Legion.Models;
     using Legion.Models.Data;
 
     using MongoDB.Bson;
@@ -59,10 +61,28 @@ namespace Legion.Repositories
             await this.photographCollection.FindOneAndReplaceAsync(p => p.Id == photograph.Id, photograph);
         }
 
+        public async Task<List<KeywordModel>> GetAllKeywords()
+        {
+            List<BsonDocument> keywords =
+                await this.photographCollection
+                    .Aggregate()
+                    .Unwind(photograph => photograph.Keywords)
+                    .Group(new BsonDocument { { "_id", "$Keywords" }, { "count", new BsonDocument("$sum", 1) } })
+                    .Sort(new BsonDocument { { "count", -1 } })
+                    .ToListAsync();
+
+            return keywords
+                .Select(k => new KeywordModel
+                    {
+                        Keyword = k["_id"].AsString,
+                        Count = k["count"].AsInt32,
+                    })
+                .ToList();
+        }
+
         public async Task<Stream> ReadImageAsStreamAsync(string fileId)
         {
-            ObjectId id = ObjectId.Parse(fileId);
-
+            var id = ObjectId.Parse(fileId);
             return await this.photographsBucket.OpenDownloadStreamAsync(id);
         }
 
@@ -79,26 +99,25 @@ namespace Legion.Repositories
                 throw new FileNotFoundException($"Failed to find file {fileName}", fileName);
             }
 
-            await using (FileStream stream = File.OpenRead(fileName))
+            var uploadOptions = new GridFSUploadOptions
             {
-                var uploadOptions = new GridFSUploadOptions
-                {
-                    Metadata = new BsonDocument(
-                        new Dictionary<string, object>
+                Metadata = new BsonDocument(
+                    new Dictionary<string, object>
+                    {
                         {
-                            {
-                                "PhotographId", photograph.Id
-                            },
-                            {
-                                "ContentType", contentType
-                            },
-                        }),
-                };
+                            "PhotographId", photograph.Id
+                        },
+                        {
+                            "ContentType", contentType
+                        },
+                    }),
+            };
 
-                ObjectId id = await this.photographsBucket.UploadFromStreamAsync(fileName, stream, uploadOptions);
+            await using FileStream stream = File.OpenRead(fileName);
 
-                return id.ToString();
-            }
+            ObjectId id = await this.photographsBucket.UploadFromStreamAsync(fileName, stream, uploadOptions);
+
+            return id.ToString();
         }
 
         public Task<int> GetPhotographsCount() => this.photographCollection.AsQueryable().CountAsync();

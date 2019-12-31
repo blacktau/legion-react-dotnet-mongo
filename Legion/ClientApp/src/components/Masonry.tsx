@@ -1,11 +1,4 @@
-import React, {
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { ReactElement, ReactNode, useCallback, useLayoutEffect, useRef, useState } from 'react'
 
 type MasonryProps = {
   breakpoints: Array<number>
@@ -17,15 +10,18 @@ const Masonry = ({ breakpoints, children }: MasonryProps) => {
   const masonryRef = useRef<HTMLDivElement>(null)
 
   const onResize = useCallback(() => {
-    if (masonryRef.current) {
-      const width = masonryRef.current.offsetWidth
-      const newColumns =
-        breakpoints.reduceRight((prev, curr, idx) => {
-          return curr < width ? prev : idx
-        }, breakpoints.length) + 1
-      if (newColumns !== columns) {
-        setColumns(newColumns)
-      }
+    if (!masonryRef.current) {
+      return
+    }
+
+    const width = masonryRef.current.offsetWidth
+    const newColumns =
+      breakpoints.reduceRight((prev, curr, idx) => {
+        return curr < width ? prev : idx
+      }, breakpoints.length) + 1
+
+    if (newColumns !== columns) {
+      setColumns(newColumns)
     }
   }, [masonryRef, breakpoints, columns])
 
@@ -46,6 +42,7 @@ const Masonry = ({ breakpoints, children }: MasonryProps) => {
         // @ts-ignore
         accumulator[currCol].push(currNode)
       }
+
       return accumulator
     }, col)
   }, [children, columns])
@@ -62,9 +59,9 @@ const Masonry = ({ breakpoints, children }: MasonryProps) => {
       {mappedChildren &&
         mappedChildren.map((col, ci: number) => {
           return (
-            <div className='column' key={ci}>
-              {col.map((child: ReactNode, idx: number) => {
-                return <div key={idx}>{child}</div>
+            <div className='column' key={ci} style={{ width: `${100 / columns}%` }}>
+              {col.map((child: ReactNode) => {
+                return child
               })}
             </div>
           )

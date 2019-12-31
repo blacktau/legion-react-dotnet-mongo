@@ -39,19 +39,26 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <None Include="ClientApp\.prettierrc.js" />
     <None Include="ClientApp\src\components\admin\AuthenticatedRoute.tsx" />
+    <None Include="ClientApp\src\components\admin\KeywordListEditor.tsx" />
     <None Include="ClientApp\src\components\admin\PhotographActionButton.tsx" />
     <None Include="ClientApp\src\components\Masonry.tsx" />
     <None Include="ClientApp\src\containers\admin\EditPhotograph.tsx" />
     <None Include="ClientApp\src\intersection-observer.d.ts" />
     <None Include="ClientApp\src\store\ManagePhotographsStore.ts" />
+    <None Include="ClientApp\src\types\Keyword.ts" />
     <None Include="ClientApp\src\webapi\photographs\getPhotograph.ts" />
     <None Include="ClientApp\src\webapi\photographs\publishPhotograph-client.ts" />
     <None Include="ClientApp\src\webapi\photographs\retractPhotograph-client.ts" />
+    <None Include="ClientApp\src\webapi\photographs\savePhotograph.ts" />
     <None Include="ClientApp\src\webapi\photographs\uploadPhotograph-client.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

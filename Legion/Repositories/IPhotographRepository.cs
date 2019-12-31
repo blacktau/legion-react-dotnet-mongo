@@ -4,6 +4,7 @@ namespace Legion.Repositories
     using System.IO;
     using System.Threading.Tasks;
 
+    using Legion.Models;
     using Legion.Models.Data;
 
     public interface IPhotographRepository
@@ -27,5 +28,7 @@ namespace Legion.Repositories
         Task<List<Photograph>> GetPublishedAsync();
 
         Task UpdatePhotographAsync(Photograph photograph);
+
+        Task<List<KeywordModel>> GetAllKeywords();
     }
 }

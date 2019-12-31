@@ -3,13 +3,16 @@ import { useParams } from 'react-router-dom'
 import { Card, Classes, EditableText, H1, Spinner } from '@blueprintjs/core'
 import { Photograph } from '../../types/Photograph'
 import { getPhotograph } from '../../webapi/photographs'
+import { savePhotograph } from '../../webapi/photographs/savePhotograph'
+import { getAllKeywords } from '../../webapi/photographs/getAllKeywords'
+import { KeywordListEditor } from '../../components/admin/KeywordListEditor'
 
 const EditPhotograph = () => {
   const { id } = useParams()
   const [inProgress, setInProgress] = useState(false)
   const [photograph, setPhotograph] = useState<Photograph | undefined>(undefined)
-  const [title, setTitle] = useState<string | undefined>(photograph ? photograph.title : undefined)
-  const [description, setDescription] = useState<string | undefined>(photograph ? photograph.description : undefined)
+  const [error, setError] = useState<unknown | undefined>(undefined)
+  const [keywordList, setKeywordList] = useState<string[]>(new Array<string>())
 
   useEffect(() => {
     if (inProgress || !id || photograph) {
@@ -18,27 +21,44 @@ const EditPhotograph = () => {
 
     setInProgress(true)
 
-    getPhotograph(id)
-      .then(photo => {
-        setPhotograph(photo)
-        setTitle(photo.title)
-        setDescription(photo.description)
+    Promise.all([getPhotograph(id), getAllKeywords()])
+      .then(values => {
+        setPhotograph(values[0])
+        setKeywordList(values[1].map(kw => kw.keyword).sort((k1, k2) => k1.localeCompare(k2)))
+      })
+      .catch(e => {
+        console.error(e)
       })
       .finally(() => {
         setInProgress(false)
       })
-  }, [id, inProgress, photograph])
+  }, [id, inProgress, photograph, keywordList])
+
+  const handlePhotographUpdated = useCallback(() => {
+    if (!photograph) {
+      return
+    }
+
+    savePhotograph(photograph)
+      .then(photo => {
+        setPhotograph(photo)
+      })
+      .catch(e => {
+        setError(e)
+      })
+  }, [photograph])
 
   return (
     <Card className={Classes.DARK + ' photographList'}>
       {inProgress && <Spinner />}
       {!inProgress && photograph && (
         <div>
+          <img src={`/images/${photograph.id}.jpg?width=500`} alt={photograph.description} className='editImage' placeholder={'Add Title'} />
           <H1>
-            <EditableText value={title} onChange={e => setTitle(e)} />
+            <EditableText onChange={title => setPhotograph({ ...photograph, title })} value={photograph.title} placeholder='Add Title' onConfirm={handlePhotographUpdated} />
           </H1>
-          <img src={`/images/${photograph.id}.jpg?height=500`} alt={photograph.description} className='editImage' />
-          <EditableText multiline={true} value={description} onChange={e => setDescription(e)} />
+          <EditableText multiline={true} value={photograph.description} onChange={description => setPhotograph({ ...photograph, description })} placeholder={'Add Description'} minLines={3} />
+          {keywordList && <KeywordListEditor availableKeywords={keywordList} selectedKeywords={photograph.keywords} />}
         </div>
       )}
     </Card>

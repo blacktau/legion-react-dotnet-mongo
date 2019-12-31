@@ -95,9 +95,18 @@ namespace Legion.Services
             return photograph;
         }
 
+        public Task<List<KeywordModel>> GetAllKeywords() => this.photographRepository.GetAllKeywords();
+
         public async Task<Photograph> GetPhotographByIdAsync(string id) => await this.photographRepository.GetPhotographByIdAsync(id);
 
-        public Task UpdatePhotograph(string id, Photograph photograph) => throw new NotImplementedException();
+        public async Task UpdatePhotograph(string id, Photograph photograph)
+        {
+            Photograph original = await this.GetPhotographByIdAsync(id);
+            original.Description = photograph.Description;
+            original.Title = photograph.Title;
+            original.Keywords = photograph.Keywords;
+            await this.photographRepository.UpdatePhotographAsync(original);
+        }
 
         private static List<string> ParseKeywords(string keywordList)
             => string.IsNullOrWhiteSpace(keywordList)

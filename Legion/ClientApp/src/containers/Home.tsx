@@ -7,7 +7,7 @@ import { getPublishedPhotographs } from '../webapi/photographs'
 import { Masonry } from '../components/Masonry'
 import { Tile } from '../components/Tile'
 
-const breakPoints = [350, 500, 750]
+const breakPoints = [350, 500, 750, 1200]
 
 const Home = () => {
   const [photographs, setPhotographs] = useState<Array<Photograph> | undefined>(undefined)
@@ -38,11 +38,11 @@ const Home = () => {
             newKeywords.set(k, v + 1)
           })
         })
+
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         const sorted = new Map<string, number>([...newKeywords.entries()].sort((a, b) => b[1] - a[1]))
         setKeywords(sorted)
-        console.log(sorted)
       })
       .catch(error => {
         console.error(`Unable to fetch photographs: ${error}`)

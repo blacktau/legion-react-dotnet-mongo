@@ -1,5 +1,7 @@
 namespace Legion.Configuration
 {
+    using System.Net.Http.Headers;
+
     using Legion.ImageResolvers;
     using Legion.Repositories;
     using Legion.Services;

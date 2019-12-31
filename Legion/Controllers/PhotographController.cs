@@ -122,5 +122,15 @@ namespace Legion.Controllers
                     count = 1, size, filePath,
                 });
         }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> UpdatePhotograph(string id, [FromBody] Photograph photograph)
+        {
+            await this.photographService.UpdatePhotograph(id, photograph);
+
+            Photograph updated = await this.photographService.GetPhotographByIdAsync(id);
+
+            return this.Ok(updated);
+        }
     }
 }

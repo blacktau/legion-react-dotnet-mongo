@@ -33,7 +33,7 @@ namespace Legion
 
             services.AddOptions();
 
-            var key = this.GetJwtKey();
+            byte[] key = this.GetJwtKey();
 
             services
                 .AddAuthentication(options =>
