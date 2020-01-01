@@ -14,6 +14,10 @@ body {
     margin-right: auto;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .dropTarget {
     width: 100%;
     border: 3px dashed $pt-dark-divider-white;

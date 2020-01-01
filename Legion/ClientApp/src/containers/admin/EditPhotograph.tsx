@@ -48,6 +48,19 @@ const EditPhotograph = () => {
       })
   }, [photograph])
 
+  const handleKeyWordsUpdated = useCallback(
+    (keywords: string[]) => {
+      if (!photograph) {
+        return
+      }
+
+      photograph.keywords = keywords
+      setPhotograph(photograph)
+      handlePhotographUpdated()
+    },
+    [handlePhotographUpdated, photograph]
+  )
+
   return (
     <Card className={Classes.DARK + ' photographList'}>
       {inProgress && <Spinner />}
@@ -57,8 +70,8 @@ const EditPhotograph = () => {
           <H1>
             <EditableText onChange={title => setPhotograph({ ...photograph, title })} value={photograph.title} placeholder='Add Title' onConfirm={handlePhotographUpdated} />
           </H1>
-          <EditableText multiline={true} value={photograph.description} onChange={description => setPhotograph({ ...photograph, description })} placeholder={'Add Description'} minLines={3} />
-          {keywordList && <KeywordListEditor availableKeywords={keywordList} selectedKeywords={photograph.keywords} />}
+          <EditableText multiline={true} value={photograph.description} onChange={description => setPhotograph({ ...photograph, description })} placeholder={'Add Description'} minLines={3} onConfirm={handlePhotographUpdated} />
+          {keywordList && <KeywordListEditor availableKeywords={keywordList} selectedKeywords={photograph.keywords} onConfirm={handleKeyWordsUpdated} />}
         </div>
       )}
     </Card>

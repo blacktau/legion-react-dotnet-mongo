@@ -67,30 +67,58 @@ const renderCreateKeyword = (query: string, active: boolean, handleClick: MouseE
 type KeywordListEditorProps = {
   availableKeywords: string[]
   selectedKeywords: string[]
+  onConfirm?: (keywords: string[]) => void
 }
 
-const KeywordListEditor = ({ availableKeywords, selectedKeywords }: KeywordListEditorProps) => {
+const KeywordListEditor = ({ availableKeywords, selectedKeywords, onConfirm }: KeywordListEditorProps) => {
   const [unselectKeywords, setUnselectedKeywords] = useState<string[]>(availableKeywords)
+  const [selectedWords, setSelectedWords] = useState<string[]>(selectedKeywords)
 
   useEffect(() => {
-    selectedKeywords.forEach(keyword => {
+    selectedWords.forEach(keyword => {
       if (unselectKeywords.indexOf(keyword) >= 0) {
         unselectKeywords.splice(unselectKeywords.indexOf(keyword), 1)
       }
       setUnselectedKeywords(unselectKeywords)
     })
-  }, [availableKeywords, selectedKeywords, unselectKeywords])
+  }, [availableKeywords, selectedWords, unselectKeywords])
 
   const addSelectedKeyword = useCallback(
     keyword => {
-      if (selectedKeywords.indexOf(keyword) >= 0) {
+      if (selectedWords.indexOf(keyword) >= 0) {
         return
       }
 
-      selectedKeywords.push(keyword)
+      selectedWords.push(keyword)
       unselectKeywords.splice(unselectKeywords.indexOf(keyword), 1)
+      setSelectedWords(selectedWords)
+      setUnselectedKeywords(unselectKeywords)
+
+      if (onConfirm) {
+        onConfirm(selectedWords)
+      }
     },
-    [selectedKeywords, unselectKeywords]
+    [onConfirm, selectedWords, unselectKeywords]
+  )
+
+  const removeKeyword = useCallback(
+    (keyword: string, index: number) => {
+      console.log(`trying to remove: ${keyword}`)
+      if (selectedWords.indexOf(keyword) < 0) {
+        return
+      }
+      console.log(`removing: ${keyword}`)
+      selectedWords.splice(selectedWords.indexOf(keyword), 1)
+      unselectKeywords.push(keyword)
+      unselectKeywords.sort()
+      setUnselectedKeywords(unselectKeywords)
+      setSelectedWords(selectedWords)
+      console.log(selectedWords)
+      if (onConfirm) {
+        onConfirm(selectedWords)
+      }
+    },
+    [selectedWords, unselectKeywords]
   )
 
   return (
@@ -98,12 +126,13 @@ const KeywordListEditor = ({ availableKeywords, selectedKeywords }: KeywordListE
       items={unselectKeywords}
       tagRenderer={(keyword: string) => keyword}
       itemRenderer={renderKeyword}
-      selectedItems={selectedKeywords}
+      selectedItems={selectedWords}
       placeholder='Add Tags (separate values with commas)'
       openOnKeyDown={true}
       tagInputProps={{
         tagProps: { minimal: true },
-        large: true
+        large: true,
+        onRemove: removeKeyword
       }}
       createNewItemFromQuery={query => query}
       createNewItemRenderer={renderCreateKeyword}
@@ -111,6 +140,7 @@ const KeywordListEditor = ({ availableKeywords, selectedKeywords }: KeywordListE
       onItemSelect={addSelectedKeyword}
       noResults={<MenuItem disabled={true} text='No results.' />}
       popoverProps={{ minimal: true }}
+      resetOnSelect={true}
     />
   )
 }
