@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2020-08-03T19:47:19Z"
+  labels:
+    app: legion
+  name: legion
+spec:
+  containers:
+  - name: mongodb
+    command:
+    - mongod
+    env:
+    - name: MONGO_INITDB_ROOT_USERNAME
+      value: LegionRoot
+    - name: MONGO_INITDB_ROOT_PASSWORD
+      value: sd5^GngYsVRx75h
+    - name: MONGO_INITDB_DATABASE
+      value: Legion
+    image: docker.io/library/mongo:latest
+    ports:
+    - containerPort: 27017
+      hostPort: 27017
+      protocol: TCP
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      seLinuxOptions: {}
+    volumeMounts:
+    - mountPath: /home/mongodb
+      name: Mongo-Home
+      readOnly: true
+    - mountPath: /docker-entrypoint-initdb.d
+      name: Mongo-Init
+      readOnly: true
+    - mountPath: /data/db
+      name: Mongo-Data
+    workingDir: /
+  - name: mongo-express
+    env:
+    - name: ME_CONFIG_MONGODB_SERVER
+      value: localhost
+    - name: ME_CONFIG_MONGODB_ENABLE_ADMIN
+      value: "true"
+    - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+      value: LegionRoot
+    - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+      value: sd5^GngYsVRx75h
+    image: docker.io/library/mongo-express:latest
+    resources: {}
+    ports:
+    - containerPort: 8081
+      hostPort: 8081
+      protocol: TCP
+    securityContext:
+      allowPrivilegeEscalation: true
+      capabilities: {}
+      privileged: false
+      readOnlyRootFilesystem: false
+      seLinuxOptions: {}
+  volumes:
+  - hostPath:
+      path: /storage/Projects/legion/legion-react-dotnet-mongo/Mongo/Home
+      type: Directory
+    name: Mongo-Home
+  - hostPath:
+      path: /storage/Projects/legion/legion-react-dotnet-mongo/Mongo/Init
+      type: Directory
+    name: Mongo-Init
+  - hostPath:
+      path: /storage/Projects/legion/legion-react-dotnet-mongo/Mongo/Data
+      type: Directory
+    name: Mongo-Data
+status: {}
+---
+metadata:
+  creationTimestamp: null
+spec: {}
+status:
+  loadBalancer: {}
+
