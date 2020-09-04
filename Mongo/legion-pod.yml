@@ -63,15 +63,17 @@ spec:
       seLinuxOptions: {}
   volumes:
   - hostPath:
-      path: /storage/Projects/legion/legion-react-dotnet-mongo/Mongo/Home
+      path: ./Home
+      readOnly: true
       type: Directory
     name: Mongo-Home
   - hostPath:
-      path: /storage/Projects/legion/legion-react-dotnet-mongo/Mongo/Init
+      path: ./Init
+      readOnly: true
       type: Directory
     name: Mongo-Init
   - hostPath:
-      path: /storage/Projects/legion/legion-react-dotnet-mongo/Mongo/Data
+      path: ./Data
       type: Directory
     name: Mongo-Data
 status: {}

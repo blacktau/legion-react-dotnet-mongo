@@ -16,35 +16,31 @@ namespace Legion.ImageResolvers
     {
         private readonly Photograph photograph;
 
-        private readonly ILogger<MongoDbResolver> logger;
-
         private readonly IPhotographRepository photographRepository;
 
-        public MongoDbResolver(ILogger<MongoDbResolver> logger, IPhotographRepository photographRepository, Photograph photograph)
+        // private readonly string key = DateTime.Now.Ticks.ToString();
+        // private readonly ILogger<MongoDbResolver> logger;
+        private ImageMetadata? imageMetaData;
+
+        public MongoDbResolver(IPhotographRepository photographRepository, Photograph photograph)
         {
-            this.logger = logger;
             this.photographRepository = photographRepository;
             this.photograph = photograph;
+            //this.logger = loggerFactory.CreateLogger<MongoDbResolver>();
         }
 
-        public Task<DateTime> GetLastWriteTimeUtcAsync()
+        public async Task<ImageMetadata> GetMetaDataAsync()
         {
-            var date = this.photograph.PublishedDate ?? DateTime.UtcNow;
-
-            return Task.FromResult(date.ToUniversalTime());
-        }
-
-        public async Task<ImageMetaData> GetMetaDataAsync()
-        {
-            using (Stream stream = await this.OpenReadAsync())
+            if (this.imageMetaData.HasValue)
             {
-                return await ImageMetaData.ReadAsync(stream);
+                return this.imageMetaData.Value;
             }
+
+            this.imageMetaData = new ImageMetadata(this.photograph.UploadedDate.Value, TimeSpan.FromHours(1));
+
+            return this.imageMetaData.GetValueOrDefault();
         }
 
-        public async Task<Stream> OpenReadAsync()
-        {
-            return await this.photographRepository.ReadImageAsStreamAsync(this.photograph.FileId);
-        }
+        public async Task<Stream> OpenReadAsync() => await this.photographRepository.ReadImageAsStreamAsync(this.photograph.FileId);
     }
 }

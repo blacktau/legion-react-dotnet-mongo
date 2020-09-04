@@ -1,4 +1,5 @@
 @import-normalize;
+@use "sass:color";
 
 $textColor: rgb(153, 153, 153);
 $backgroundColour: #292f33;
@@ -61,6 +62,19 @@ body {
 .headerIcon {
   padding: 10px;
   fill: white;
+  border-radius: 3px;
+  border: solid 1px $backgroundColour;
+  cursor: pointer;
+  
+  &:hover {
+    background: lighten($backgroundColour, 10);
+    border: solid 1px lighten($backgroundColour, 10);
+  }
+  
+  &:active {
+    background: lighten($backgroundColour, 15);
+    border: solid 1px lighten($backgroundColour, 15);
+  }
 }
 
 .headerClear {

@@ -1,7 +1,5 @@
 namespace Legion.Configuration
 {
-    using System.Net.Http.Headers;
-
     using Legion.ImageResolvers;
     using Legion.Repositories;
     using Legion.Services;
@@ -9,14 +7,17 @@ namespace Legion.Configuration
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
 
+    using SixLabors.ImageSharp.Web;
     using SixLabors.ImageSharp.Web.Caching;
     using SixLabors.ImageSharp.Web.Commands;
     using SixLabors.ImageSharp.Web.DependencyInjection;
     using SixLabors.ImageSharp.Web.Middleware;
     using SixLabors.ImageSharp.Web.Processors;
-    using SixLabors.Memory;
+
+    using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
     internal static class ServiceRegistry
     {
@@ -29,7 +30,9 @@ namespace Legion.Configuration
                 .AddSingleton<IImageMetadataExtractor, ImageMetadataExtractor>()
                 .AddSingleton<IMongoDbResolverFactory, MongoDbResolverFactory>()
                 .AddSingleton<ITokenService, TokenService>()
-                .AddSingleton<IStartupFilter, EnsureAdminUserStartupFilter>();
+                .AddSingleton<IStartupFilter, EnsureAdminUserStartupFilter>()
+                .AddSingleton<IKeywordRepository, KeywordRepository>()
+                .AddSingleton<IKeywordService, KeywordService>();
 
         public static IServiceCollection AddLegionOptions(this IServiceCollection services, IConfiguration configuration)
         {
@@ -43,23 +46,21 @@ namespace Legion.Configuration
             services
                 .AddImageSharpCore()
                 .SetRequestParser<QueryCollectionRequestParser>()
-                .SetMemoryAllocatorFromMiddlewareOptions()
+                .Configure<PhysicalFileSystemCacheOptions>(
+                    options =>
+                    {
+                        options.CacheFolder = "is-cache";
+                    })
                 .SetCache(
                     provider => new PhysicalFileSystemCache(
-                        provider.GetRequiredService<IHostingEnvironment>(),
-                        provider.GetRequiredService<MemoryAllocator>(),
-                        provider.GetRequiredService<IOptions<ImageSharpMiddlewareOptions>>())
-                    {
-                        Settings =
-                        {
-                            [PhysicalFileSystemCache.Folder] = PhysicalFileSystemCache.DefaultCacheFolder,
-                        },
-                    })
+                        provider.GetRequiredService<IOptions<PhysicalFileSystemCacheOptions>>(),
+                        provider.GetRequiredService<IWebHostEnvironment>(),
+                        provider.GetRequiredService<IOptions<ImageSharpMiddlewareOptions>>(),
+                        provider.GetRequiredService<FormatUtilities>()))
                 .SetCacheHash<CacheHash>()
                 .AddProvider<MongoDbImageProvider>()
                 .AddProcessor<ResizeWebProcessor>()
-                .AddProcessor<FormatWebProcessor>()
-                .AddProcessor<BackgroundColorWebProcessor>();
+                .AddProcessor<FormatWebProcessor>();
 
             return services;
         }

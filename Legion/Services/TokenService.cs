@@ -38,7 +38,7 @@ namespace Legion.Services
                         new Claim(ClaimTypes.Name, user.Username), new Claim(ClaimTypes.Sid, user.Id),
                     }),
                 Expires = DateTime.UtcNow.AddDays(this.authenticationOptions.ClaimExpiryDays),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(this.authenticationOptions.TokenSecretBytes), SecurityAlgorithms.HmacSha256Signature),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(this.authenticationOptions.GetTokenSecretBytes()), SecurityAlgorithms.HmacSha256Signature),
             };
     }
 }

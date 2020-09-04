@@ -9,6 +9,7 @@ namespace Legion.ImageResolvers
     using Legion.Repositories;
 
     using Microsoft.AspNetCore.Http;
+
     using Microsoft.Extensions.Logging;
 
     using SixLabors.ImageSharp.Web.Providers;
@@ -24,32 +25,21 @@ namespace Legion.ImageResolvers
 
         private readonly IPhotographRepository photographRepository;
 
+        private readonly Dictionary<string, bool> validCache;
+
         public MongoDbImageProvider(IPhotographRepository photographRepository, IMongoDbResolverFactory mongoDbResolverFactory, ILogger<MongoDbImageProvider> logger)
         {
             this.photographRepository = photographRepository;
             this.mongoDbResolverFactory = mongoDbResolverFactory;
             this.logger = logger;
+            this.validCache = new Dictionary<string, bool>();
         }
 
         public Func<HttpContext, bool> Match { get; set; } = context => context.Request.Path.HasValue && context.Request.Path.StartsWithSegments("/images");
 
-        public IDictionary<string, string> Settings
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+        public IDictionary<string, string> Settings { get; set; }
 
-        public IImageResolver Get(HttpContext context)
-        {
-            var photoId = ExtractPhotographId(context.Request.Path);
-            this.logger.LogInformation($"Resolving {photoId}");
-
-            Photograph photograph = RunSync(async () => await this.photographRepository.GetPhotographByIdAsync(photoId));
-
-            this.logger.LogInformation($"Got Photograph for {photoId}");
-
-            return this.mongoDbResolverFactory.CreateResolver(photograph);
-        }
+        public ProcessingBehavior ProcessingBehavior { get; } = ProcessingBehavior.All;
 
         public async Task<IImageResolver> GetAsync(HttpContext context)
         {
@@ -86,8 +76,15 @@ namespace Legion.ImageResolvers
             }
 
             var photoId = ExtractPhotographId(path);
+
+            if (this.validCache.ContainsKey(photoId))
+            {
+                return this.validCache[photoId];
+            }
+
             var isValid = await this.photographRepository.IsExistingPhotographAsync(photoId);
             this.logger.LogInformation($"IsValidRequestAsync: {photoId}: {isValid}");
+            this.validCache.Add(photoId, isValid);
 
             return isValid;
         }

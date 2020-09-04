@@ -10,6 +10,4 @@ db.createUser({
   roles: ['readWrite']
 })
 
-
-
 EOF

@@ -1,4 +1,4 @@
-export interface Photograph {
+export default interface Photograph {
   id: string
   title: string
   description: string
@@ -8,7 +8,7 @@ export interface Photograph {
   fNumber: string
   exposureProgram: string
   isoSpeed: string
-  keywords: Array<string>
+  keywords: string[]
   fileId: string
   isPublished: boolean
   publishedDate: Date | undefined

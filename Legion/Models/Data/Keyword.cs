@@ -1,9 +1,14 @@
 namespace Legion.Models.Data
 {
-    public class Tag
-    {
-        public string Keyword { get; set; }
+    using MongoDB.Bson.Serialization.Attributes;
 
-        public bool Published { get; set; }
+    public class Keyword
+    {
+        [BsonId]
+        public string Word { get; set; }
+
+        public bool IsPublished { get; set; }
+
+        public int Count { get; set; }
     }
 }

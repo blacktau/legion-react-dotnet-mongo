@@ -8,6 +8,8 @@ namespace Legion.Configuration
 
         internal const string PhotographCollection = "photographs";
 
+        internal const string KeywordCollection = "keywords";
+
         internal const string PhotographBucketName = "images";
     }
 }

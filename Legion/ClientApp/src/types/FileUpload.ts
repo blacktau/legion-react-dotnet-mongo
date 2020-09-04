@@ -1,12 +1,16 @@
-export class FileUpload {
-  key: string
-  name: string
-  progress = 0
-  success = false
-  error?: string
+import { RequestError } from './RequestError'
 
-  constructor(public file: File) {
-    this.key = file.name
-    this.name = file.name
-  }
+export default interface FileUpload {
+  key: string
+  progress: number
+  success: boolean
+  error?: RequestError
+  name: string
+}
+
+export interface UploadProgressUpdate {
+  key: string
+  progress: number
+  error?: RequestError
+  success?: boolean
 }

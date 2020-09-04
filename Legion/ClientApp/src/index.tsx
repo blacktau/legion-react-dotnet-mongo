@@ -1,31 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createBrowserHistory } from 'history'
-import { routerMiddleware } from 'react-router-redux'
+import { Provider } from 'react-redux'
 
-import routes from './routes'
-import configureStore from './store/configureStore'
-import Root from './containers/Root'
-import registerServiceWorker from './registerServiceWorker'
+import * as serviceWorker from './serviceWorker'
+import ErrorBoundary from './app/ErrorBoundary'
 
-import 'typeface-roboto'
-import 'typeface-open-sans'
 import './index.scss'
+import App from './app/App'
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href') || undefined
-const history = createBrowserHistory({ basename: baseUrl })
+import store from 'store'
 
-const middleware = [routerMiddleware(history)]
-
-const loadPolyfills = async () => {
-  if (typeof window.IntersectionObserver === 'undefined') {
-    await import('intersection-observer')
-  }
-}
-
-loadPolyfills()
-
-// Get the application-wide store instance, pre-populating with state from the server where available.
 declare global {
   interface Window {
     initialReduxState: object
@@ -33,10 +17,18 @@ declare global {
   }
 }
 
-const store = configureStore({}, middleware)
+ReactDOM.render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </ErrorBoundary>
+  </React.StrictMode>,
+  document.getElementById('root')
+)
 
-const rootElement = document.getElementById('root')
-
-ReactDOM.render(<Root store={store} history={history} routes={routes} />, rootElement)
-
-registerServiceWorker()
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister()

@@ -8,8 +8,6 @@ namespace Legion.Configuration
 
         public string TokenSecret { get; set; }
 
-        public byte[] TokenSecretBytes => Encoding.UTF8.GetBytes(this.TokenSecret);
-
         public double ClaimExpiryDays { get; set; } = 1;
 
         public string DefaultAdminPassword { get; set; }

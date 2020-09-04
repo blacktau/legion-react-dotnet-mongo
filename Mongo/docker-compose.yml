@@ -20,6 +20,9 @@ services:
       - type: bind
         source: ./Init/
         target: /docker-entrypoint-initdb.d/
+      - type: shared
+        source: ./Data/
+        target: /data/db/
 
   legion-mongo-express:
     image: mongo-express

@@ -1,14 +1,17 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 namespace Legion
 {
     using Legion.Configuration;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
 
@@ -20,7 +23,7 @@ namespace Legion
     {
         public Startup(IConfiguration configuration) => this.Configuration = configuration;
 
-        private IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -33,25 +36,27 @@ namespace Legion
 
             services.AddOptions();
 
+            services.AddDistributedMemoryCache();
+
             byte[] key = this.GetJwtKey();
 
             services
                 .AddAuthentication(options =>
-                    {
-                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    })
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        options.SaveToken = true;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(key),
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                        };
-                    });
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -76,7 +81,6 @@ namespace Legion
             else
             {
                 app.UseExceptionHandler("/Error");
-
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -84,9 +88,9 @@ namespace Legion
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
             app.UseRouting();
             app.UseImageSharp();
-
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -113,7 +117,7 @@ namespace Legion
         {
             var authenticationSettingsSection = this.Configuration.GetSection(AuthenticationOptions.SectionName);
             var authenticationOptions = authenticationSettingsSection.Get<AuthenticationOptions>();
-            return authenticationOptions.TokenSecretBytes;
+            return authenticationOptions.GetTokenSecretBytes();
         }
 
         private void RegisterMongoDatabase(IServiceCollection services) =>
@@ -124,7 +128,7 @@ namespace Legion
                     var mongoOptions = mongoSection.Get<MongoDbOptions>();
                     var connectionString = string.Format(mongoOptions.ConnectionString, mongoOptions.WebPassword);
                     var client = new MongoClient(connectionString);
-                    return client.GetDatabase(mongoSection[nameof(MongoDbOptions.DatabaseName)]);
+                    return client.GetDatabase(mongoOptions.DatabaseName);
                 });
     }
 }

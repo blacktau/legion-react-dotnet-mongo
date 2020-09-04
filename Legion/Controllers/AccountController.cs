@@ -100,29 +100,26 @@ namespace Legion.Controllers
 
         private ErrorResponse GetValidationError(PasswordValidationResult validationResult)
         {
-            switch (validationResult)
+            return validationResult switch
             {
-                case PasswordValidationResult.NewPasswordMatch:
-                    return new ErrorResponse
-                    {
-                        ErrorCode = ErrorCodes.NewPasswordSameAsOld,
-                        Message = "New Password matches previous password.",
-                    };
+                PasswordValidationResult.NewPasswordMatch => new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.NewPasswordSameAsOld,
+                    Message = "New Password matches previous password.",
+                },
 
-                case PasswordValidationResult.RequirementsNotMet:
-                    return new ErrorResponse
-                    {
-                        ErrorCode = ErrorCodes.PasswordComplexityNotMet,
-                        Message = "The password complexity Requirements are not met.",
-                    };
+                PasswordValidationResult.RequirementsNotMet => new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.PasswordComplexityNotMet,
+                    Message = "The password complexity Requirements are not met.",
+                },
 
-                default:
-                    return new ErrorResponse
-                    {
-                        ErrorCode = ErrorCodes.UnknownError,
-                        Message = "Unknown Error.",
-                    };
-            }
+                _ => new ErrorResponse
+                {
+                    ErrorCode = ErrorCodes.UnknownError,
+                    Message = "Unknown Error.",
+                },
+            };
         }
     }
 }
