@@ -1,5 +1,11 @@
-@import-normalize;
+@import '~normalize.css';
 @use "sass:color";
+
+/*@import "~@blueprintjs/core/lib/css/blueprint.css";
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "~@blueprintjs/core/lib/scss/variables";
+@import "~@blueprintjs/select/lib/css/blueprint-select.css";*/
+
 
 $textColor: rgb(153, 153, 153);
 $backgroundColour: #292f33;
@@ -15,6 +21,8 @@ body {
   color: $textColor;
   width: 95%;
   margin: 5px auto;
+  display: flex;
+  flex-direction: row;
 }
 
 .header h1 {
@@ -33,16 +41,54 @@ body {
   padding: 0;
 }
 
-.headerLeft {
-  float: left;
+.photoFilter {
+  display: inline-block;
+  vertical-align: baseline;
+}
 
+.inputBox {
+  display: block;
+  position: relative;
+
+  input {
+    position: relative;
+    width: 100%;
+
+    &:not(:first-child) {
+      padding-left: 5px;
+    }
+
+    &:not(:last-child) {
+      padding-right: 5px;
+    }
+  }
+
+  .bp3-icon {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+
+    &:first-child {
+      left: 0;
+    }
+
+    &:last-child {
+      right: 0;
+    }
+  }
+}
+
+.headerLeft {
   a {
     text-decoration: none;
   }
 }
 
+.headerCenter {
+  flex-grow: 2;
+}
+
 .headerRight {
-  float: right;
   text-align: right;
 }
 
@@ -65,12 +111,16 @@ body {
   border-radius: 3px;
   border: solid 1px $backgroundColour;
   cursor: pointer;
-  
+  text-align: center;
+  display: inline-block;
+  margin-left: 5px;
+  vertical-align: middle;
+
   &:hover {
     background: lighten($backgroundColour, 10);
     border: solid 1px lighten($backgroundColour, 10);
   }
-  
+
   &:active {
     background: lighten($backgroundColour, 15);
     border: solid 1px lighten($backgroundColour, 15);
@@ -146,7 +196,7 @@ body {
   .bp3-icon {
     fill: $lighterGray !important;
   }
-  
+
   >img {
     box-shadow: 0 1px 1px 2px rgba(0, 0, 0, .15);
     border-radius: 10px;
@@ -157,3 +207,4 @@ body {
     }
   }
 }
+

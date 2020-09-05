@@ -16,22 +16,23 @@ namespace Legion.Controllers
     [Authorize]
     public class KeywordController : Controller
     {
-        private readonly ILogger<PhotographController> logger;
-        private readonly IKeywordService keywordService;
+        private readonly ILogger<KeywordController> logger;
+        private readonly IPhotographService photographService;
 
-        public KeywordController(ILogger<PhotographController> logger, IKeywordService keywordService)
+        public KeywordController(ILogger<KeywordController> logger, IPhotographService photographService)
         {
             this.logger = logger;
-            this.keywordService = keywordService;
+            this.photographService = photographService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<KeywordModel>>> GetAll()
+        [HttpGet("published")]
+        [AllowAnonymous]
+        public async Task<List<KeywordModel>> GetPublishedAll()
         {
-            List<Keyword> keywords = await this.keywordService.GetAllKeywords();
+            List<KeywordModel> keywords = await this.photographService.GetAllKeywords();
             this.logger.LogInformation($"GetAll: returning {keywords.Count}");
 
-            return this.Ok(keywords);
+            return keywords;
         }
     }
 }

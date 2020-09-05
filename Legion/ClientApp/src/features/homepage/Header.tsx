@@ -21,9 +21,10 @@ const Header = ({ keywords, onSelectedKeywordsChanged }: HeaderProps) => {
           </h1>
           <h2>photography</h2>
         </div>
+        <div className='headerCenter'/>
         <div className='headerRight'>
-          <KeywordFilter keywords={keywords} onSelectedKeywordsChanged={onSelectedKeywordsChanged} />
-          <Icon icon='menu' iconSize={32} className='headerIcon' />
+          <KeywordFilter />
+          <Icon icon='menu' iconSize={32} className='headerIcon' tagName='div' />
         </div>
       </div>
       <div className='headerClear' />

@@ -66,6 +66,7 @@ namespace Legion.Repositories
             List<BsonDocument> keywords =
                 await this.photographCollection
                     .Aggregate()
+                    .Match(photograph => photograph.IsPublished)
                     .Unwind(photograph => photograph.Keywords)
                     .Group(new BsonDocument { { "_id", "$Keywords" }, { "count", new BsonDocument("$sum", 1) } })
                     .Sort(new BsonDocument { { "count", -1 } })

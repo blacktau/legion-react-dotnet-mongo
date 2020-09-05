@@ -21,7 +21,8 @@ const getPublishedPhotographs = async () => {
 
 const getAllKeywords = async () => {
   try {
-    return await Axios.get<any, Keyword[]>('keyword/')
+    const result = await Axios.get('/api/keyword/published')
+    return result.data
   } catch (error) {
     return handleError(error)
   }

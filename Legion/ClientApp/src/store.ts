@@ -5,13 +5,13 @@ import { useDispatch } from 'react-redux'
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware =>
-  getDefaultMiddleware()
+  middleware:
+    getDefaultMiddleware()
 })
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./rootReducer', () => {
-    const newRootReducer = require('./rootReducer').default
+    const newRootReducer = rootReducer
     store.replaceReducer(newRootReducer)
   })
 }
