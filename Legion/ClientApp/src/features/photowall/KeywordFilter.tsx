@@ -1,4 +1,3 @@
-import { Icon } from '@blueprintjs/core'
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getKeywords } from './PhotowallSlice'
@@ -6,11 +5,10 @@ import InputBox from 'components/InputBox'
 
 const KeywordFilter = () => {
   const keywords = useSelector(getKeywords)
-  const [visible, setVisible] = useState(false)
   const [matches, setMatches] = useState<string[]>([])
   const [query, setQuery] = useState('')
 
-  const keywordRenderer = useCallback((keyword, query) => {
+  const keywordRenderer = useCallback((keyword: string, query: string) => {
     const keywordLower = keyword.toLowerCase()
     const queryLower = query.toLowerCase()
     const idx = keywordLower.indexOf(queryLower)

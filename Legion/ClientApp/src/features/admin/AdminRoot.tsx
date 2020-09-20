@@ -11,6 +11,7 @@ import './admin.scss'
 import ChangePasswordPage from 'features/changePassword/ChangePasswordPage'
 import ManagePhotographsPage from 'features/managePhotographs/ManagePhotographsPage'
 import UploadPhotographsPage from 'features/uploadPhotographs/UploadPhotographsPage'
+import EditPhotographPage from 'features/editPhotgraph/EditPhotographPage'
 
 // import UploadPhotograph from './UploadPhotograph'
 // import ManagePhotographs from '../managePhotographs/ManagePhotographs'
@@ -27,9 +28,9 @@ const AdminRoot = () => (
       <AuthenticatedRoute path='/admin/photographs/manage' component={ManagePhotographsPage} />
 
       <AuthenticatedRoute path='/admin/photographs/upload' component={UploadPhotographsPage}/>
-      {/* <AuthenticatedRoute path='/admin/photograph/:id/edit' component={EditPhotograph} />
+      <AuthenticatedRoute path='/admin/photograph/:id/edit' component={EditPhotographPage} />
 
-<AuthenticatedRoute path='/admin/keywords' component={ManageKeywords} /> */}
+      {/* <AuthenticatedRoute path='/admin/keywords' component={ManageKeywords} /> */}
       <Route component={NoMatch} />
     </Switch>
   </>

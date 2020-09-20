@@ -1,14 +1,5 @@
-import { RequestError } from 'types/RequestError'
-import Keyword from 'types/Keyword'
 import Axios from 'axios'
-
-const handleError = (error: any) => {
-  throw new RequestError(
-    error.response ? error.response.status : -1,
-    error.message,
-    error.response ? error.response.statusText : 'Unknown Error'
-  )
-}
+import { handleError } from 'app/apiCommon'
 
 const getPublishedPhotographs = async () => {
   try {
@@ -19,7 +10,7 @@ const getPublishedPhotographs = async () => {
   }
 }
 
-const getAllKeywords = async () => {
+const getAllPublishedKeywords = async () => {
   try {
     const result = await Axios.get('/api/keyword/published')
     return result.data
@@ -28,4 +19,4 @@ const getAllKeywords = async () => {
   }
 }
 
-export { getPublishedPhotographs, getAllKeywords }
+export { getPublishedPhotographs, getAllPublishedKeywords }
