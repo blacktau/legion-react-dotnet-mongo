@@ -1,96 +1,91 @@
 /* eslint-disable  */
-import React, { useState, useCallback } from 'react'
-import { Button, Classes, Dialog, Intent, Toaster, Toast } from '@blueprintjs/core'
-import RequiredInputGroup from '../../components/RequiredInputGroup'
-import LockButton from '../../components/LockButton'
-import { authenticateUser } from './authenticateUserApi'
-import { User } from '../../types/User'
-import { useDispatch } from 'react-redux'
-import { loggedIn } from './AuthenticationSlice'
-import { RequestError } from 'types/RequestError'
+import React, { useState, useCallback, ChangeEvent } from 'react'
+import { TextField, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress, InputAdornment, Slide } from '@material-ui/core'
+import { Person as PersonIcon, Lock as LockIcon } from '@material-ui/icons'
+import { useDispatch, useSelector } from 'react-redux'
+import { Alert } from '@material-ui/lab'
+import { authenticateUser, authenticationError, clearAuthenticationError, authenticationInProgress } from './AuthenticationSlice'
 
 const LoginDialog = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState<RequestError | undefined>(undefined)
-  const [inProgress, setInProgress] = useState(false)
+
+  const error = useSelector(authenticationError)
+  const inProgress = useSelector(authenticationInProgress)
+
   const dispatch = useDispatch()
+
+  const clearError = useCallback(() => {
+    dispatch(clearAuthenticationError({}))
+  }, [dispatch])
 
   const submitLogin = useCallback(async () => {
     setSubmitted(true)
     if (username && password) {
-      setInProgress(true)
-      try {
-        const user: User = await authenticateUser(username, password)
-        dispatch(loggedIn(user))
-        setInProgress(false)
-      } catch (error) {
-        setError(error)
-        setInProgress(false)
-      }
+      dispatch(authenticateUser([username, password]))
     }
   }, [password, username, dispatch])
 
+  const setInput = useCallback((evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, setter) => {
+    setter(evt.target.value)
+  },[])
+
+  console.log(!!error)
+
   return (
     <>
-      {error && (
-        <Toaster>
-          <Toast message={error.message} intent={Intent.DANGER} onDismiss={() => setError(undefined)} />
-        </Toaster>
-      )}
-      <Dialog isOpen autoFocus enforceFocus icon='log-in' className={Classes.DARK} title='Login' onClose={() => setError(undefined)}>
-        <div className={Classes.DIALOG_BODY}>
-          <RequiredInputGroup
+      <Snackbar open={!!error} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} TransitionComponent={Slide}>
+        <Alert severity='error' onClose={() => clearError()}>{error?.message}</Alert>
+      </Snackbar>
+      <Dialog open={true} onClose={() => clearError()}>
+        <DialogTitle>Login</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
             disabled={inProgress}
             value={username}
-            type='text'
+            onChange={evt => setInput(evt, setUsername)}
             placeholder='Username'
-            onChange={event => {
-              if (error) {
-                setError(undefined)
-              }
-              setUsername(event.target.value)
-            }}
-            supplied={!(submitted && (username == null || username.length <= 1))}
-          />
-          <br />
-          <RequiredInputGroup
+            required
+            name='username'
+            autoComplete='username'
+            margin='normal'
+            error={!(submitted && (!username || username.length <= 1))}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <PersonIcon />
+                </InputAdornment>
+              )}}/>
+          <TextField
             disabled={inProgress}
             value={password}
-            type={showPassword ? 'text' : 'password'}
+            onChange={evt => setInput(evt, setPassword)}
+            fullWidth
             placeholder='Password'
-            onChange={event => {
-              if (error) {
-                setError(undefined)
-              }
-              setPassword(event.target.value)
-            }}
-            rightElement={<LockButton setShowPassword={setShowPassword} showPassword={showPassword} />}
-            onKeyPress={event => {
-              if (event.key === 'Enter') {
-                void submitLogin()
-                event.preventDefault()
-              }
-            }}
-            supplied={!(submitted && (password == null || password.length <= 1))}
-          />
-        </div>
-        <div className={Classes.DIALOG_FOOTER}>
-          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button
-              intent={Intent.PRIMARY}
-              onClick={() => {
-                submitLogin()
-              }}
-              disabled={inProgress}
-              icon='log-in'
-              loading={inProgress}>
-              Login
-            </Button>
-          </div>
-        </div>
+            required
+            margin='normal'
+            name='password'
+            autoComplete='current-password'
+            error={!(submitted && (!password || password.length <= 1))}
+            type='password'
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <LockIcon />
+                </InputAdornment>
+              )}}/>
+        </DialogContent>
+        <DialogActions>
+          {inProgress && <CircularProgress size={30} />}
+          <Button
+            variant='contained'
+            color='primary'
+            disabled={inProgress}
+            onClick={submitLogin}>Login</Button>
+        </DialogActions>
       </Dialog>
     </>
   )

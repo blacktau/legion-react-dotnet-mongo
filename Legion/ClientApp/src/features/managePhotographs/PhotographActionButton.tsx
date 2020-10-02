@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
-import { Button, Icon, IconName, Intent, Toast, Toaster } from '@blueprintjs/core'
-import React, { useCallback, useState } from 'react'
-import { MaybeElement } from '@blueprintjs/core/src/common/props'
+import React, { ReactNode, useCallback, useState } from 'react'
 import Photograph from 'types/Photograph'
 import { useDispatch } from 'react-redux'
 import { Action } from 'redux'
 import { RequestError } from 'types/RequestError'
+import { IconButton, Snackbar } from '@material-ui/core'
+import { Alert } from '@material-ui/lab'
 
 interface PhotographActionButtonProps {
-  icon?: IconName | MaybeElement
+  children: ReactNode
   apiClient: (photograph: Photograph) => Promise<void | Photograph>
   photograph: Photograph
   actionFactory: (photograph: Photograph) => Action<string>
-  intent?: Intent
 }
 
-const PhotographActionButton = ({ icon, apiClient, photograph, actionFactory, ...buttonProps }: PhotographActionButtonProps) => {
+const PhotographActionButton = ({ children, apiClient, photograph, actionFactory, ...buttonProps }: PhotographActionButtonProps) => {
   const dispatch = useDispatch()
   const [error, setError] = useState<RequestError | undefined>(undefined)
 
@@ -33,13 +32,13 @@ const PhotographActionButton = ({ icon, apiClient, photograph, actionFactory, ..
   return (
     <>
       {error && (
-        <Toaster>
-          <Toast message={error.message} intent={Intent.DANGER} onDismiss={() => setError(undefined)} />
-        </Toaster>
+        <Snackbar>
+          <Alert severity='error' onClose={() => setError(undefined)}>{error.message}</Alert>
+        </Snackbar>
       )}
-      <Button {...buttonProps} onClick={onClick}>
-        {icon && <Icon icon={icon} />}
-      </Button>
+      <IconButton {...buttonProps} onClick={onClick}>
+        {children}
+      </IconButton>
     </>
   )
 }

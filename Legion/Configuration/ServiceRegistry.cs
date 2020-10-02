@@ -1,5 +1,7 @@
 namespace Legion.Configuration
 {
+    using System;
+
     using Legion.ImageResolvers;
     using Legion.Repositories;
     using Legion.Services;
@@ -10,12 +12,14 @@ namespace Legion.Configuration
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Options;
 
+    using SixLabors.ImageSharp;
     using SixLabors.ImageSharp.Web;
     using SixLabors.ImageSharp.Web.Caching;
     using SixLabors.ImageSharp.Web.Commands;
     using SixLabors.ImageSharp.Web.DependencyInjection;
     using SixLabors.ImageSharp.Web.Middleware;
     using SixLabors.ImageSharp.Web.Processors;
+    using SixLabors.ImageSharp.Web.Providers;
 
     using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -44,7 +48,13 @@ namespace Legion.Configuration
         public static IServiceCollection AddImageSharpServices(this IServiceCollection services)
         {
             services
-                .AddImageSharpCore()
+                .AddImageSharp(
+                    options =>
+                    {
+                        options.Configuration = Configuration.Default;
+                        options.BrowserMaxAge = TimeSpan.FromDays(7);
+                        options.CacheMaxAge = TimeSpan.FromDays(365);
+                    })
                 .SetRequestParser<QueryCollectionRequestParser>()
                 .Configure<PhysicalFileSystemCacheOptions>(
                     options =>
@@ -58,9 +68,9 @@ namespace Legion.Configuration
                         provider.GetRequiredService<IOptions<ImageSharpMiddlewareOptions>>(),
                         provider.GetRequiredService<FormatUtilities>()))
                 .SetCacheHash<CacheHash>()
-                .AddProvider<MongoDbImageProvider>()
-                .AddProcessor<ResizeWebProcessor>()
-                .AddProcessor<FormatWebProcessor>();
+                .RemoveProcessor<BackgroundColorWebProcessor>()
+                .RemoveProvider<PhysicalFileSystemProvider>()
+                .AddProvider<MongoDbImageProvider>();
 
             return services;
         }

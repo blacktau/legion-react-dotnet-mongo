@@ -29,7 +29,7 @@ namespace Legion.Repositories
                 await this.keywordCollection.ReplaceOneAsync(
                     k => k.Word == keyword.Word,
                     keyword,
-                    new UpdateOptions()
+                    new ReplaceOptions
                     {
                         IsUpsert = true,
                     });

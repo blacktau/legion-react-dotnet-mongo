@@ -45,7 +45,7 @@ namespace Legion.Repositories
             await this.userCollection.ReplaceOneAsync(
                 u => u.Username == user.Username,
                 user,
-                new UpdateOptions
+                new ReplaceOptions
                 {
                     IsUpsert = true,
                 });

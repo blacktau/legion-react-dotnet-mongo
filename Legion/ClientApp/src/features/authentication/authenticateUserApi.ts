@@ -1,6 +1,6 @@
 import { User } from 'types/User'
-import { RequestError } from 'types/RequestError'
 import Axios from 'axios'
+import { RequestError } from 'types/RequestError'
 
 interface AuthenticateUserResponse {
   username?: string
@@ -15,8 +15,10 @@ const handleAuthenticateUserResponse = ({ token, ...user }: AuthenticateUserResp
 }
 
 const handleAuthenticateUserError = (error: any) => {
+  console.log(error)
+
   let message
-  switch (error.errorCode) {
+  switch (error.status) {
     case 500:
       message = 'Internal Server Error'
       break
@@ -24,7 +26,7 @@ const handleAuthenticateUserError = (error: any) => {
       message = 'Invalid Credentials'
       break
     default:
-      message = error.message
+      message = error.response?.data ?? error.message
       break
   }
 
@@ -44,4 +46,4 @@ const authenticateUser = async (username: string, password: string) => {
   }
 }
 
-export { authenticateUser }
+export const authenticationApi = { authenticateUser }

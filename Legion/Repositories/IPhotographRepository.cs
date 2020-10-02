@@ -30,5 +30,7 @@ namespace Legion.Repositories
         Task UpdatePhotographAsync(Photograph photograph);
 
         Task<List<KeywordModel>> GetAllKeywords();
+
+        Task<long> GetPhotographSize(string fileId);
     }
 }

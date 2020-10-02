@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import Photograph from 'types/Photograph'
 import { RootState } from 'rootReducer'
+import { photographsApi } from './photographsApi'
 
 interface PhotoWallState {
   allPhotographs: Photograph[]
@@ -14,11 +15,21 @@ const initialState: PhotoWallState = {
   keywords: []
 }
 
+export const fetchPublishedPhotographs = createAsyncThunk(
+  'photoWall/fetchPublishedPhotographs',
+  async () => {
+    const photographs = await photographsApi.getPublishedPhotographs()
+    return photographs
+  }
+)
+
 const photoWallSlice = createSlice({
   name: 'photoWall',
   initialState: initialState,
   reducers: {
-    initializePhotographs: (state, action: PayloadAction<Photograph[]>) => ({
+  },
+  extraReducers: builder => {
+    builder.addCase(fetchPublishedPhotographs.fulfilled, (state, action: PayloadAction<Photograph[]>) => ({
       ...state,
       allPhotographs: action.payload,
       filteredPhotographs: action.payload.slice(),
@@ -29,13 +40,11 @@ const photoWallSlice = createSlice({
         })
         .filter(s => !!s && s.length > 0) || [])
         .filter((value, index, self) => self.indexOf(value) === index)
-    })
+    }))
   }
 })
 
 export const getWallPhotographs = (state: RootState) => state.photoWall.allPhotographs
 export const getKeywords = (state: RootState) => state.photoWall.keywords
-
-export const { initializePhotographs } = photoWallSlice.actions
 
 export default photoWallSlice.reducer

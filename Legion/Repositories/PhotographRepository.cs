@@ -87,7 +87,17 @@ namespace Legion.Repositories
             return await this.photographsBucket.OpenDownloadStreamAsync(id);
         }
 
-        public async Task<Photograph> GetPhotographByIdAsync(string id) => await this.photographCollection.AsQueryable().FirstOrDefaultAsync(p => p.Id == id);
+        public async Task<Photograph> GetPhotographByIdAsync(string id)
+        {
+            Photograph photograph = await this.photographCollection.AsQueryable().FirstOrDefaultAsync(p => p.Id == id);
+
+            if (photograph.ByteSize == 0)
+            {
+                photograph.ByteSize = await this.GetPhotographSize(photograph.FileId);
+            }
+
+            return photograph;
+        }
 
         public async Task<bool> IsExistingPhotographAsync(Photograph photograph) => await this.IsExistingPhotographAsync(photograph.Id);
 
@@ -122,5 +132,12 @@ namespace Legion.Repositories
         }
 
         public Task<int> GetPhotographsCount() => this.photographCollection.AsQueryable().CountAsync();
+
+        public async Task<long> GetPhotographSize(string fileId)
+        {
+            var id = ObjectId.Parse(fileId);
+            FilterDefinition<GridFSFileInfo> filter = Builders<GridFSFileInfo>.Filter.Eq("_id", id);
+            return (await this.photographsBucket.FindAsync(filter)).First().Length;
+        }
     }
 }

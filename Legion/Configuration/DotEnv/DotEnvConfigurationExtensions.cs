@@ -59,17 +59,6 @@ namespace Legion.Configuration.DotEnv
             source.ResolveFileProvider();
 
             return builder.Add(source);
-
-            return builder.AddDotEnvFile(
-                s =>
-                {
-                    s.FileProvider = provider;
-                    s.Path = path;
-                    s.Optional = optional;
-                    s.ReloadOnChange = reloadOnChange;
-                    s.Prefix = prefix;
-                    s.ResolveFileProvider();
-                });
         }
 
         public static IConfigurationBuilder AddDotEnvFile(this IConfigurationBuilder builder, Action<DotEnvConfigurationSource> configureSource)

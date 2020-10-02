@@ -35,6 +35,7 @@ namespace Legion.Services
             SetIPTCProperties(directories, metaData);
 
             metaData.ContentType = GetContentType(fileType);
+            metaData.ByteSize = new FileInfo(filePath).Length;
 
             return metaData;
         }

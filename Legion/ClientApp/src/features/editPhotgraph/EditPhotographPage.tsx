@@ -1,4 +1,4 @@
-import { Card, Classes, EditableText, H1, Spinner } from '@blueprintjs/core'
+import { Card, CircularProgress, TextField, Typography } from '@material-ui/core'
 import { getAllKeywords } from 'features/manageKeywords/manageKeywordsApi'
 import { savePhotograph } from 'features/managePhotographs/managePhotographsApi'
 import { updatePhotographList } from 'features/managePhotographs/ManagePhotographsSlice'
@@ -48,15 +48,13 @@ const EditPhotographPage = () => {
   }, [dispatch, photograph])
 
   return (
-    <Card className={Classes.DARK + ' photographList'}>
-      {inProgress && <Spinner />}
+    <Card className={' photographList'}>
+      {inProgress && <CircularProgress />}
       {!inProgress && photograph && (
         <div>
           <img src={`/images/${photograph.id}.jpg?width=500`} alt={photograph.description} className='editImage' placeholder={'Add Title'} />
-          <H1>
-            <EditableText onChange={title => setPhotograph({ ...photograph, title })} value={photograph.title} placeholder='Add Title' onConfirm={handlePhotographUpdated} />
-          </H1>
-          <EditableText multiline={true} value={photograph.description} onChange={description => setPhotograph({ ...photograph, description })} placeholder={'Add Description'} minLines={3} onConfirm={handlePhotographUpdated} />
+          <TextField onChange={evt => setPhotograph({ ...photograph, title: evt.target.value })} value={photograph.title} placeholder='Add Title' />
+          <TextField multiline={true} value={photograph.description} onChange={evt => setPhotograph({ ...photograph, description: evt.target.value })} placeholder={'Add Description'} rows={3} />
         </div>
       )}
     </Card>

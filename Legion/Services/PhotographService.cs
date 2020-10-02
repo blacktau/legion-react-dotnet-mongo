@@ -52,6 +52,7 @@ namespace Legion.Services
                 Width = metaData.Width,
                 Height = metaData.Height,
                 Ratio = metaData.Width / (decimal)metaData.Height,
+                ByteSize = metaData.ByteSize,
             };
 
             photograph.FileId = await this.photographRepository.SaveImageAsync(filePath, photograph, metaData.ContentType);

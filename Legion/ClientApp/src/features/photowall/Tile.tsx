@@ -1,6 +1,5 @@
 import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { Spinner } from '@blueprintjs/core'
 import Photograph from 'types/Photograph'
 
 interface TileProps {
@@ -35,7 +34,6 @@ const Tile = ({ photograph }: TileProps) => {
 
   return (
     <div className={'tile' + (imageLoaded ? '' : ' preload')} ref={ref} style={{ minHeight: `${minHeight}px`, display: isErrored ? 'none' : '' }}>
-      {!imageLoaded && <Spinner />}
       {inView && (
         <img className={imageLoaded ? 'loaded' : 'loading'} src={`/images/${photograph.id}.jpg?width=${defaultWidth}`} alt={photograph.description} ref={imgRef} onLoad={() => setImageLoaded(true)} onError={() => setIsErrored(true)} />
       )}

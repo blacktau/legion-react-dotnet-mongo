@@ -30,13 +30,13 @@ namespace Legion.Configuration.DotEnv
             {
                 var line = reader.ReadLine();
 
-                if (this.IsIgnoredLine(line))
+                if (string.IsNullOrWhiteSpace(line) || this.IsIgnoredLine(line))
                 {
                     continue;
                 }
 
                 var varName = this.NormalizeKey(line.Substring(0, line.IndexOf('=')));
-                var value = line.Substring(line.IndexOf('=')+1);
+                var value = line.Substring(line.IndexOf('=') + 1);
 
                 data[varName] = value;
             }
@@ -44,11 +44,10 @@ namespace Legion.Configuration.DotEnv
             this.Data = data;
         }
 
-        private string NormalizeKey(string key) => 
+        private string NormalizeKey(string key) =>
             key.Substring(this.prefix.Length).Replace("__", ConfigurationPath.KeyDelimiter);
 
-        private bool IsIgnoredLine(string line) => 
-            string.IsNullOrWhiteSpace(line) ||
+        private bool IsIgnoredLine(string line) =>
             line.StartsWith("#") ||
             !line.Contains("=") ||
             (!string.IsNullOrEmpty(this.prefix) &&

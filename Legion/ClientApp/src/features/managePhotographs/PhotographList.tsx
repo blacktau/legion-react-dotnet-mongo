@@ -1,7 +1,7 @@
 import React from 'react'
 import PhotographListRow from './PhotographListRow'
-import { HTMLTable } from '@blueprintjs/core'
 import Photograph from '../../types/Photograph'
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core'
 
 interface PhotographListProps {
   photographs: Photograph[]
@@ -13,23 +13,23 @@ const PhotographList = ({ photographs }: PhotographListProps) => {
   }
 
   return (
-    <HTMLTable bordered condensed striped>
-      <thead>
-        <tr>
-          <th>&nbsp;</th>
-          <th>&nbsp;</th>
-          <th>Title</th>
-          <th>Uploaded</th>
-          <th>Published</th>
-          <th>&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>&nbsp;</TableCell>
+          <TableCell>&nbsp;</TableCell>
+          <TableCell>Title</TableCell>
+          <TableCell>Uploaded</TableCell>
+          <TableCell>Published</TableCell>
+          <TableCell>&nbsp;</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
         {photographs.map(p => {
           return <PhotographListRow key={p.id} value={p} />
         })}
-      </tbody>
-    </HTMLTable>
+      </TableBody>
+    </Table>
   )
 }
 

@@ -9,7 +9,7 @@ namespace Legion.ImageResolvers
     using Legion.Repositories;
 
     using Microsoft.AspNetCore.Http;
-
+    using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Logging;
 
     using SixLabors.ImageSharp.Web.Providers;
@@ -17,18 +17,21 @@ namespace Legion.ImageResolvers
 
     public class MongoDbImageProvider : IImageProvider
     {
+        public IMemoryCache MemoryCache { get; }
+
         private static readonly TaskFactory TaskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
 
         private readonly ILogger<MongoDbImageProvider> logger;
-
+        
         private readonly IMongoDbResolverFactory mongoDbResolverFactory;
 
         private readonly IPhotographRepository photographRepository;
 
         private readonly Dictionary<string, bool> validCache;
 
-        public MongoDbImageProvider(IPhotographRepository photographRepository, IMongoDbResolverFactory mongoDbResolverFactory, ILogger<MongoDbImageProvider> logger)
+        public MongoDbImageProvider(IPhotographRepository photographRepository, IMongoDbResolverFactory mongoDbResolverFactory, ILogger<MongoDbImageProvider> logger, IMemoryCache memoryCache)
         {
+            this.MemoryCache = memoryCache;
             this.photographRepository = photographRepository;
             this.mongoDbResolverFactory = mongoDbResolverFactory;
             this.logger = logger;
@@ -53,7 +56,20 @@ namespace Legion.ImageResolvers
             return this.mongoDbResolverFactory.CreateResolver(photograph);
         }
 
-        public bool IsValidRequest(HttpContext context) => RunSync(async () => await this.IsValidRequestAsync(context));
+        public bool IsValidRequest(HttpContext context)
+        {
+            this.logger.LogInformation($"IsValidRequest {context.Request.Path}");
+
+            if (this.MemoryCache.TryGetValue<bool>(context.Request.Path, out var isValid))
+            {
+                return isValid;
+            }
+
+            isValid = RunSync(async () => await this.IsValidRequestAsync(context));
+            this.MemoryCache.Set(context.Request.Path, isValid, TimeSpan.FromMinutes(5));
+
+            return isValid;
+        }
 
         private static string ExtractPhotographId(PathString path)
         {

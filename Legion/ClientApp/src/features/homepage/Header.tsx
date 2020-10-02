@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Icon } from '@blueprintjs/core'
 import KeywordFilter from 'features/photowall/KeywordFilter'
 
 interface HeaderProps {
@@ -24,7 +23,6 @@ const Header = ({ keywords, onSelectedKeywordsChanged }: HeaderProps) => {
         <div className='headerCenter'/>
         <div className='headerRight'>
           <KeywordFilter />
-          <Icon icon='menu' iconSize={32} className='headerIcon' tagName='div' />
         </div>
       </div>
       <div className='headerClear' />

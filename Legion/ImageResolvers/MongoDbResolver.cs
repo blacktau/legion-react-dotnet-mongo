@@ -15,32 +15,36 @@ namespace Legion.ImageResolvers
     public class MongoDbResolver : IImageResolver
     {
         private readonly Photograph photograph;
+        private readonly ILogger<MongoDbResolver> logger;
 
         private readonly IPhotographRepository photographRepository;
 
-        // private readonly string key = DateTime.Now.Ticks.ToString();
-        // private readonly ILogger<MongoDbResolver> logger;
         private ImageMetadata? imageMetaData;
 
-        public MongoDbResolver(IPhotographRepository photographRepository, Photograph photograph)
+        public MongoDbResolver(IPhotographRepository photographRepository, Photograph photograph, ILogger<MongoDbResolver> logger)
         {
             this.photographRepository = photographRepository;
             this.photograph = photograph;
-            //this.logger = loggerFactory.CreateLogger<MongoDbResolver>();
+            this.logger = logger;
         }
 
-        public async Task<ImageMetadata> GetMetaDataAsync()
+        public Task<ImageMetadata> GetMetaDataAsync()
         {
+            this.logger.LogInformation($"[{this.photograph.Id}] GetMetaDataAsync");
             if (this.imageMetaData.HasValue)
             {
-                return this.imageMetaData.Value;
+                return Task.FromResult(this.imageMetaData.Value);
             }
 
-            this.imageMetaData = new ImageMetadata(this.photograph.UploadedDate.Value, TimeSpan.FromHours(1));
+            this.imageMetaData = new ImageMetadata(this.photograph.UploadedDate, TimeSpan.MaxValue, this.photograph.ByteSize);
 
-            return this.imageMetaData.GetValueOrDefault();
+            return Task.FromResult(this.imageMetaData.GetValueOrDefault());
         }
 
-        public async Task<Stream> OpenReadAsync() => await this.photographRepository.ReadImageAsStreamAsync(this.photograph.FileId);
+        public async Task<Stream> OpenReadAsync()
+        {
+            this.logger.LogInformation($"[{this.photograph.Id}] OpenReadAsync");
+            return await this.photographRepository.ReadImageAsStreamAsync(this.photograph.FileId);
+        }
     }
 }

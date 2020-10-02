@@ -19,4 +19,4 @@ const getAllPublishedKeywords = async () => {
   }
 }
 
-export { getPublishedPhotographs, getAllPublishedKeywords }
+export const photographsApi = { getPublishedPhotographs, getAllPublishedKeywords }

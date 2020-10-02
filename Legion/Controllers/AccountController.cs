@@ -42,7 +42,7 @@ namespace Legion.Controllers
             {
                 this.logger.LogInformation($"Invalid Username ({userCredentials.Username}) or password");
 
-                return this.Unauthorized();
+                return this.Unauthorized("Invalid Username or Password.");
             }
 
             var token = this.tokenService.GenerateToken(user);

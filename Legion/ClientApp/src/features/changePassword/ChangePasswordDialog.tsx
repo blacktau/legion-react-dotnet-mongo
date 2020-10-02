@@ -1,18 +1,19 @@
-import React, { useState, ChangeEvent, useCallback } from 'react'
-import { Dialog, Classes, Button, Intent, Toast, Alert, Toaster } from '@blueprintjs/core'
+import React, { useState, ChangeEvent, useCallback, Dispatch, SetStateAction } from 'react'
 import { useHistory } from 'react-router-dom'
-import RequiredInputGroup from '../../components/RequiredInputGroup'
-import LockButton from '../../components/LockButton'
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, Slide, Snackbar, TextField } from '@material-ui/core'
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons'
+import { Alert } from '@material-ui/lab'
 import { changePassword } from './changePasswordApi'
 import { RequestError } from '../../types/RequestError'
 
 const ChangePasswordDialog = () => {
   const [currentPassword, setCurrentPassword] = useState('')
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [newPassword, setNewPassword] = useState('')
   const [repeatedNewPassword, setRepeatedNewPassword] = useState('')
   const [passwordChanged, setPasswordChanged] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+
   const [inProgress, setInProgress] = useState(false)
   const [error, setError] = useState<RequestError | undefined>(undefined)
   const history = useHistory()
@@ -36,62 +37,71 @@ const ChangePasswordDialog = () => {
     history.push('/admin')
   }, [history])
 
+  const setValue = useCallback((event: ChangeEvent<HTMLInputElement>, setter: Dispatch<SetStateAction<string>>) => {
+    setError(undefined)
+    setter(event.target.value)
+  }, [setError])
+
   return (
     <>
-      {error && (
-        <Toaster>
-          <Toast message={error.message} intent={Intent.DANGER} onDismiss={() => setError(undefined)} />
-        </Toaster>
-      )}
-      <Alert
-        isOpen={passwordChanged}
-        confirmButtonText='Okay'
-        onConfirm={gotoAdmin}
-        className={Classes.DARK}>
-        <p>Password Successfully Updated</p>
-      </Alert>
-      <Dialog isOpen autoFocus enforceFocus icon='lock' className={Classes.DARK} title='Change Password' onClose={gotoAdmin}>
-        <div className={Classes.DIALOG_BODY}>
-          <RequiredInputGroup
+      <Snackbar open={!!error} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} TransitionComponent={Slide}>
+        <Alert severity='error' onClose={() => setError(undefined)}>{error?.message}</Alert>
+      </Snackbar>
+      <Snackbar open={passwordChanged} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} TransitionComponent={Slide}>
+        <Alert severity='success' onClose={gotoAdmin}>Password Changed.</Alert>
+      </Snackbar>
+      <Dialog open={true} onClose={gotoAdmin}>
+        <DialogTitle>Change Password</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
             disabled={inProgress}
             value={currentPassword}
             type={showCurrentPassword ? 'text' : 'password'}
             autoComplete='current-password'
             placeholder='Current Password'
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setError(undefined)
-              setCurrentPassword(event.target.value)
-            }}
-            rightElement={<LockButton setShowPassword={setShowCurrentPassword} showPassword={showCurrentPassword} />}
-            supplied={!(submitted && (!currentPassword || currentPassword.length < 1))}
-          />
-          <br />
-          <RequiredInputGroup
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setValue(event, setCurrentPassword)}
+            margin='normal'
+            error={!(submitted && (!currentPassword || currentPassword.length <= 1))}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)} size='small'>
+                    {showCurrentPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}/>
+          <TextField
+            fullWidth
             disabled={inProgress}
             value={newPassword}
-            type='password'
+            type={'password'}
             autoComplete='new-password'
             placeholder='New Password'
-            onChange={event => {
-              setError(undefined)
-              setNewPassword(event.target.value)
-            }}
-            supplied={!(submitted && (!newPassword || newPassword.length < 1))}
-          />
-          <br />
-          <RequiredInputGroup
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setValue(event, setNewPassword)}
+            margin='normal'
+            error={!(submitted && (!newPassword || newPassword.length <= 1))} />
+          <TextField
+            fullWidth
             disabled={inProgress}
             value={repeatedNewPassword}
-            type='password'
+            type={'password'}
             autoComplete='new-password'
             placeholder='Repeat New Password'
-            onChange={event => {
-              setError(undefined)
-              setRepeatedNewPassword(event.target.value)
-            }}
-            supplied={!(submitted && (!repeatedNewPassword || repeatedNewPassword.length < 1))}
-          />
-        </div>
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setValue(event, setRepeatedNewPassword)}
+            margin='normal'
+            error={!(submitted && (!repeatedNewPassword || repeatedNewPassword.length <= 1))} />
+        </DialogContent>
+        <DialogActions>
+          {inProgress && <CircularProgress size={30} />}
+          <Button variant='contained' onClick={submitRequest} disabled={inProgress} color='primary'>Change Password</Button>
+          <Button variant='contained' onClick={gotoAdmin} disabled={inProgress} color='secondary'>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      {/*
+      <Dialog isOpen autoFocus enforceFocus icon='lock' className={Classes.DARK} title='Change Password' onClose={gotoAdmin}>
+        <div className={Classes.DIALOG_BODY}>
         <div className={Classes.DIALOG_FOOTER}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button intent={Intent.PRIMARY} onClick={submitRequest} disabled={inProgress} loading={inProgress}>
@@ -103,7 +113,7 @@ const ChangePasswordDialog = () => {
           </div>
         </div>
       </Dialog>
-      {passwordChanged && <Toast intent={Intent.PRIMARY} />}
+      {passwordChanged && <Toast intent={Intent.PRIMARY} />} */}
     </>
   )
 }

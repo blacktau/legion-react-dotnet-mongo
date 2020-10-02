@@ -27,7 +27,7 @@ namespace Legion.ImageResolvers
                 return this.resolverCache[photograph.Id];
             }
 
-            var resolver = new MongoDbResolver(this.photographRepository, photograph);
+            var resolver = new MongoDbResolver(this.photographRepository, photograph, this.loggerFactory.CreateLogger<MongoDbResolver>());
             this.resolverCache.Add(photograph.Id, resolver);
 
             return resolver;

@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { getKeywords } from './PhotowallSlice'
-import InputBox from 'components/InputBox'
 
 const KeywordFilter = () => {
   const keywords = useSelector(getKeywords)
@@ -41,7 +40,6 @@ const KeywordFilter = () => {
       {matches && matches.length > 0 && <ul>
         {matches.map(match => keywordRenderer(match, query))}
       </ul>}
-      <InputBox onChange={handleSetQuery} icon='filter' />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Dialog, Classes, Button, Intent } from '@blueprintjs/core'
+
 import { Action } from 'redux'
 
 import DropTarget from 'components/DropTarget'
@@ -9,6 +9,7 @@ import FileUpload from 'types/FileUpload'
 import { selectUploads, initializeUploads, resetUploads } from './UploadPhotographsSlice'
 import { useHistory } from 'react-router-dom'
 import { uploadPhotograph } from './fileUploadApi'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@material-ui/core'
 
 const UploadPhotographsPage = () => {
   const [showComplete, setShowComplete] = useState(false)
@@ -43,6 +44,15 @@ const UploadPhotographsPage = () => {
 
   const goToAdmin = useCallback(() => dispatch(history.push('/admin')), [dispatch, history])
 
+  const handleButtonClick = useCallback(() => {
+    if (currentUploads && !currentUploads.some((p: FileUpload) => p.error)) {
+      resetPhotographUpload()
+      goToAdmin()
+    } else {
+      setShowComplete(false)
+    }
+  }, [currentUploads, goToAdmin, resetPhotographUpload])
+
   const isIncomplete = currentUploads?.some((p: FileUpload) => p.progress < 100)
 
   const preUpload = currentUploads?.length === 0
@@ -62,26 +72,15 @@ const UploadPhotographsPage = () => {
         />
       )}
       <UploadProgressDisplay uploads={currentUploads} onReset={(): Action<string> => resetPhotographUpload()} />
-      <Dialog isOpen={showComplete && !isIncomplete}>
-        <div className={Classes.DIALOG_HEADER}>Upload Complete</div>
-        <div className={Classes.DRAWER_BODY}>
+      <Dialog open={showComplete && !isIncomplete}>
+        <DialogTitle>Upload Complete</DialogTitle>
+        <DialogContent>
           {!currentUploads?.some((p: FileUpload) => p.error) && <p>Upload Complete</p>}
           {currentUploads?.some((p: FileUpload) => p.error) && <p>Upload complete with errors</p>}
-        </div>
-        <div className={Classes.DRAWER_FOOTER}>
-          <Button
-            onClick={() => {
-              if (currentUploads && !currentUploads.some((p: FileUpload) => p.error)) {
-                resetPhotographUpload()
-                goToAdmin()
-              } else {
-                setShowComplete(false)
-              }
-            }}
-            intent={Intent.PRIMARY}>
-            OK
-          </Button>
-        </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleButtonClick}>OK</Button>
+        </DialogActions>
       </Dialog>
     </>
   )

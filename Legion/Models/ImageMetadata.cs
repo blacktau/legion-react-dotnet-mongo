@@ -28,5 +28,7 @@ namespace Legion.Models
         public string Caption { get; set; }
 
         public string ContentType { get; internal set; }
+
+        public long ByteSize { get; set; }
     }
 }

@@ -31,12 +31,14 @@ namespace Legion.Models.Data
 
         public DateTime? PublishedDate { get; set; }
 
-        public DateTime? UploadedDate { get; set; }
+        public DateTime UploadedDate { get; set; }
 
         public int Width { get; set; }
 
         public int Height { get; set; }
 
         public decimal Ratio { get; set; }
+
+        public long ByteSize { get; set; }
     }
 }

@@ -1,79 +1,69 @@
-@import "~normalize.css";
-@import "~@blueprintjs/core/lib/css/blueprint.css";
-@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
-@import "~@blueprintjs/core/lib/scss/variables";
-@import "~@blueprintjs/select/lib/css/blueprint-select.css";
-
-body {
-    padding-top: 60px;
-}
-
 .dropCard {
-    width: 60%;
-    margin-left: auto;
-    margin-right: auto;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 a:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .dropTarget {
-    width: 100%;
-    border: 3px dashed $pt-dark-divider-white;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    color: $pt-dark-icon-color;
+  width: 100%;
+  border: 3px dashed pink;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  color: green;
 
-    p {
-        margin-top: 1rem;
-    }
+  p {
+    margin-top: 1rem;
+  }
 }
 
 .uploadProgressCard {
 
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 
-    table {
-        width: 100%;
-    }
+  table {
+    width: 100%;
+  }
 }
 
 .photographList {
 
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 
-    table {
-        width: 100%;
-    }
+  table {
+    width: 100%;
+  }
 }
 
 .photographRowImage {
-    min-height: 50px;
+  min-height: 50px;
 }
 
 .editImage {
-    margin: 20px auto;
+  margin: 20px auto;
 }
 
 .editKeyword {
-    margin-left: 5px;
-    margin-bottom: 5px;
+  margin-left: 5px;
+  margin-bottom: 5px;
 }
 
 .addKeyword {
-    margin-left: 5px;
-    margin-top: -1px;
+  margin-left: 5px;
+  margin-top: -1px;
 }
 
 .bp3-multi-select-popover .bp3-menu {
-    scrollbar-color: $pt-dark-code-background-color $pt-dark-app-background-color;
-    scrollbar-width: thin;
+  scrollbar-color: pink;
+  scrollbar-width: thin;
 }
