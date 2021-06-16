@@ -20,9 +20,9 @@ const managePhotographsSlice = createSlice({
       return !state.photographs
         ? state
         : {
-          ...state,
-          photographs: state.photographs.map((p: Photograph) => p.id === action.payload.id ? action.payload : p)
-        }
+            ...state,
+            photographs: state.photographs.map((p: Photograph) => p.id === action.payload.id ? action.payload : p)
+          }
     },
     initializePhotographs: (state, action: PayloadAction<Photograph[]>) => ({
       ...state,

@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 
 import rootReducer from './rootReducer'
 import { useDispatch } from 'react-redux'
@@ -6,11 +6,12 @@ import { useDispatch } from 'react-redux'
 const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware =>
-  getDefaultMiddleware()
+    getDefaultMiddleware()
 })
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./rootReducer', () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const newRootReducer = require('./rootReducer').default
     store.replaceReducer(newRootReducer)
   })

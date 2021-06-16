@@ -12,7 +12,8 @@ import store from 'store'
 
 declare global {
   interface Window {
-    initialReduxState: object
+    initialReduxState: unknown
+    // eslint-disable-next-line @typescript-eslint/ban-types
     __REDUX_DEVTOOLS_EXTENSION__: Function
   }
 }

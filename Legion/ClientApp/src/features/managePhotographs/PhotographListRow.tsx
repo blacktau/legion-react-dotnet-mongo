@@ -40,11 +40,13 @@ const PhotographListRow = ({ value }: PhotographListRowProps) => {
               <Icon icon='edit' />
             </Button>
           </Link>
-          {!value.isPublished ? (
+          {!value.isPublished
+            ? (
             <PhotographActionButton intent={Intent.SUCCESS} icon='eye-on' apiClient={publishPhotograph} photograph={value} actionFactory={updatePhotographList} />
-          ) : (
+              )
+            : (
             <PhotographActionButton intent={Intent.WARNING} icon='eye-off' apiClient={retractPhotograph} photograph={value} actionFactory={updatePhotographList} />
-          )}
+              )}
         </ButtonGroup>
       </td>
     </tr>

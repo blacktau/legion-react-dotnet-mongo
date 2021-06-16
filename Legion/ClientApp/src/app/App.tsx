@@ -4,6 +4,7 @@ import NoMatch from './NoMatch'
 import Homepage from 'features/homepage/Homepage'
 // import AdminRoot from 'features/admin/AdminRoot'
 
+// eslint-disable-next-line @typescript-eslint/promise-function-async
 const AdminRoot = lazy(() => import('features/admin/AdminRoot'))
 
 function App () {

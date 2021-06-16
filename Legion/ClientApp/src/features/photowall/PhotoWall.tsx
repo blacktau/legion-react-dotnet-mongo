@@ -22,7 +22,8 @@ const PhotoWall = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return wallPhotographs ? (
+  return wallPhotographs
+    ? (
     <div className='masonry-container'>
       <Masonry breakpoints={breakPoints}>
         {wallPhotographs.map(photograph => {
@@ -30,11 +31,12 @@ const PhotoWall = () => {
         })}
       </Masonry>
     </div>
-  ) : (
+      )
+    : (
     <div className='photowall-loading'>
       <Spinner />
     </div>
-  )
+      )
 }
 
 export default PhotoWall

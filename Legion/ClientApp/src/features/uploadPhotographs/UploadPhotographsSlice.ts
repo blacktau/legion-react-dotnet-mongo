@@ -27,11 +27,11 @@ const uploadPhotographsSlice = createSlice({
         (uploadEntry: FileUpload) =>
           (uploadEntry.key === action.payload.key
             ? {
-              ...uploadEntry,
-              progress: action.payload.progress * 100,
-              success: action.payload.progress === 1,
-              error: action.payload.error
-            }
+                ...uploadEntry,
+                progress: action.payload.progress * 100,
+                success: action.payload.progress === 1,
+                error: action.payload.error
+              }
             : uploadEntry)
       )
     }),
